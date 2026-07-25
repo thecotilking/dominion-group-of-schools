@@ -1,0 +1,487 @@
+/* ==========================================================================
+   Dominion Group of Schools — Design Tokens
+   Palette: indigo (authority/trust), gold (dominion/sunrise), sage (growth),
+            paper (warmth, readability), ink (text)
+   Type: Fraunces (display, characterful serif) + Work Sans (body, humanist sans)
+   Signature: "Arc of Growth" — a rising sun-arc motif marking the three real
+   stages a child passes through here: Nursery -> Primary -> Secondary.
+   ========================================================================== */
+
+:root {
+  --indigo: #1B2A4A;
+  --indigo-deep: #101B33;
+  --gold: #E8A33D;
+  --gold-soft: #F2C876;
+  --sage: #7C9473;
+  --paper: #FAF6EF;
+  --ink: #1A1A1A;
+  --ink-soft: #4A5568;
+  --line: rgba(27, 42, 74, 0.12);
+
+  --display: "Fraunces", Georgia, serif;
+  --body: "Work Sans", -apple-system, sans-serif;
+
+  --max: 1120px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+body {
+  margin: 0;
+  font-family: var(--body);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.55;
+  font-size: 17px;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--display);
+  font-weight: 600;
+  line-height: 1.12;
+  margin: 0 0 0.5em;
+  color: var(--indigo);
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 500; }
+h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); }
+h3 { font-size: 1.3rem; }
+
+p { margin: 0 0 1em; color: var(--ink-soft); }
+
+a { color: inherit; }
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ---------- Header / Nav ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--indigo);
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.brand-name small {
+  display: block;
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 2px;
+}
+
+nav.main-nav {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+nav.main-nav a {
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--indigo);
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+nav.main-nav a:hover,
+nav.main-nav a[aria-current="page"] {
+  border-bottom-color: var(--gold);
+}
+
+nav.main-nav a:focus-visible,
+a.btn:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  nav.main-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 24px 20px;
+    gap: 14px;
+    display: none;
+  }
+  nav.main-nav.open { display: flex; }
+  .nav-toggle { display: block; }
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--indigo);
+  color: var(--paper);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(27,42,74,0.25); }
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--indigo-deep);
+}
+.btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(232,163,61,0.35); }
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--indigo);
+  color: var(--indigo);
+}
+.btn-outline:hover { background: var(--indigo); color: var(--paper); }
+
+/* ---------- Hero ---------- */
+
+.hero {
+  position: relative;
+  padding: 64px 0 40px;
+  overflow: hidden;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: 1fr; }
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 14px;
+}
+
+.hero p.lead {
+  font-size: 1.15rem;
+  max-width: 46ch;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+/* Arc of Growth signature graphic */
+.arc-wrap {
+  position: relative;
+}
+
+.arc-caption {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -6px;
+  font-family: var(--display);
+  font-size: 0.82rem;
+  color: var(--indigo);
+  font-weight: 600;
+}
+
+.arc-caption span small {
+  display: block;
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.arc-path {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: draw 1.4s ease forwards 0.2s;
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.arc-dot {
+  opacity: 0;
+  animation: pop 0.4s ease forwards;
+}
+.arc-dot:nth-of-type(1) { animation-delay: 0.5s; }
+.arc-dot:nth-of-type(2) { animation-delay: 1.0s; }
+.arc-dot:nth-of-type(3) { animation-delay: 1.5s; }
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arc-path { stroke-dashoffset: 0; animation: none; }
+  .arc-dot { opacity: 1; animation: none; }
+}
+
+/* ---------- Stage cards (Nursery/Primary/Secondary) ---------- */
+
+.stages {
+  padding: 72px 0;
+  background: var(--indigo);
+  color: var(--paper);
+}
+
+.stages h2 { color: var(--paper); }
+.stages .section-intro { color: rgba(250,246,239,0.75); max-width: 60ch; }
+
+.stage-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+}
+
+@media (max-width: 760px) {
+  .stage-list { grid-template-columns: 1fr; }
+}
+
+.stage-card {
+  background: rgba(250,246,239,0.06);
+  border: 1px solid rgba(250,246,239,0.14);
+  border-radius: 16px;
+  padding: 28px;
+}
+
+.stage-num {
+  font-family: var(--display);
+  font-size: 2.2rem;
+  color: var(--gold);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.stage-card h3 { color: var(--paper); margin-bottom: 8px; }
+.stage-card p { color: rgba(250,246,239,0.7); margin-bottom: 0; }
+
+/* ---------- Generic sections ---------- */
+
+section { padding: 72px 0; }
+
+.section-intro { max-width: 60ch; }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-top: 36px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 26px;
+}
+
+.card h3 { margin-bottom: 8px; }
+
+.placeholder-img {
+  background: linear-gradient(135deg, var(--sage), var(--indigo));
+  border-radius: 14px;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
+  font-family: var(--body);
+  text-align: center;
+  padding: 10px;
+}
+
+/* ---------- CTA band ---------- */
+
+.cta-band {
+  background: var(--gold-soft);
+  border-radius: 20px;
+  padding: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cta-band h2 { margin-bottom: 4px; }
+.cta-band p { color: var(--indigo); opacity: 0.8; margin-bottom: 0; }
+
+/* ---------- Footer ---------- */
+
+footer.site-footer {
+  background: var(--indigo-deep);
+  color: rgba(250,246,239,0.7);
+  padding: 56px 0 28px;
+  font-size: 0.92rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 700px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+footer.site-footer h4 {
+  color: var(--paper);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--body);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+footer.site-footer a { text-decoration: none; color: inherit; }
+footer.site-footer a:hover { color: var(--gold); }
+
+footer.site-footer ul { list-style: none; padding: 0; margin: 0; }
+footer.site-footer li { margin-bottom: 8px; }
+
+.footer-bottom {
+  border-top: 1px solid rgba(250,246,239,0.12);
+  padding-top: 20px;
+  font-size: 0.82rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Page header (non-home pages) ---------- */
+
+.page-hero {
+  padding: 56px 0 40px;
+  background: var(--indigo);
+  color: var(--paper);
+}
+.page-hero h1 { color: var(--paper); margin-bottom: 10px; }
+.page-hero p { color: rgba(250,246,239,0.75); max-width: 60ch; margin-bottom: 0; }
+
+/* ---------- Forms ---------- */
+
+form.contact-form {
+  display: grid;
+  gap: 18px;
+  max-width: 560px;
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--indigo);
+  margin-bottom: 6px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  font-family: var(--body);
+  font-size: 1rem;
+  background: #fff;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+/* ---------- Utility ---------- */
+
+.mt-0 { margin-top: 0; }
+.text-center { text-align: center; }
