@@ -37,14 +37,14 @@
     <div class="arc-wrap">
       <svg viewBox="0 0 400 220" width="100%" style="overflow:visible;">
         <path class="arc-path" d="M20 190 C 90 60, 310 60, 380 190" stroke="#6E1E2E" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <circle class="arc-dot" cx="20" cy="190" r="8" fill="#8A6C4E"/>
-        <circle class="arc-dot" cx="200" cy="72" r="8" fill="#D9A73B"/>
-        <circle class="arc-dot" cx="380" cy="190" r="8" fill="#6E1E2E"/>
+        <a href="#nursery"><circle class="arc-dot" cx="20" cy="190" r="9" fill="#8A6C4E"/></a>
+        <a href="#primary"><circle class="arc-dot" cx="200" cy="72" r="9" fill="#D9A73B"/></a>
+        <a href="#secondary"><circle class="arc-dot" cx="380" cy="190" r="9" fill="#6E1E2E"/></a>
       </svg>
       <div class="arc-caption">
-        <span>Nursery<small>Ages 1&ndash;5</small></span>
-        <span>Primary<small>Ages 6&ndash;11</small></span>
-        <span>Secondary<small>Ages 12&ndash;17</small></span>
+        <a href="#nursery">Nursery<small>Ages 1&ndash;5</small></a>
+        <a href="#primary">Primary<small>Ages 6&ndash;11</small></a>
+        <a href="#secondary">Secondary<small>Ages 12&ndash;17</small></a>
       </div>
     </div>
   </div>
@@ -56,17 +56,17 @@
     <h2>Three stages. One continuous path.</h2>
     <p class="section-intro">We built Dominion around a simple idea: a child shouldn't have to change schools, cultures or standards just to grow up. Each stage hands off to the next with the same values intact.</p>
     <div class="stage-list">
-      <div class="stage-card">
+      <div class="stage-card" id="nursery">
         <span class="stage-num">01</span>
         <h3>Nursery</h3>
         <p>Play-driven early learning that builds curiosity, language and confidence before formal schooling begins.</p>
       </div>
-      <div class="stage-card">
+      <div class="stage-card" id="primary">
         <span class="stage-num">02</span>
         <h3>Primary</h3>
         <p>A structured, well-rounded curriculum in literacy, numeracy, science and character, taught by dedicated form teachers.</p>
       </div>
-      <div class="stage-card">
+      <div class="stage-card" id="secondary">
         <span class="stage-num">03</span>
         <h3>Secondary</h3>
         <p>Rigorous preparation for WAEC/NECO and beyond, with sciences, arts, commercial subjects and strong pastoral care.</p>
@@ -171,5 +171,28 @@
     </div>
   </div>
 </footer>
+<script>
+(function() {
+  var arc = document.querySelector('.arc-wrap');
+  if (arc && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          arc.classList.add('in-view');
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    io.observe(arc);
+  } else if (arc) {
+    arc.classList.add('in-view');
+  }
+  document.querySelectorAll('.main-nav a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      document.querySelector('.main-nav').classList.remove('open');
+    });
+  });
+})();
+</script>
 </body>
 </html>

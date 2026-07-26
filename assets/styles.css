@@ -264,7 +264,22 @@ button:focus-visible {
   font-weight: 600;
 }
 
-.arc-caption span small {
+.arc-caption a {
+  text-decoration: none;
+  color: var(--indigo);
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.arc-caption a:hover,
+.arc-caption a:focus-visible {
+  background: rgba(217, 167, 59, 0.18);
+  color: var(--gold);
+}
+
+.arc-caption span small,
+.arc-caption a small {
   display: block;
   font-family: var(--body);
   font-weight: 500;
@@ -277,6 +292,8 @@ button:focus-visible {
 .arc-path {
   stroke-dasharray: 500;
   stroke-dashoffset: 500;
+}
+.arc-wrap.in-view .arc-path {
   animation: draw 1.4s ease forwards 0.2s;
 }
 
@@ -286,11 +303,23 @@ button:focus-visible {
 
 .arc-dot {
   opacity: 0;
+  cursor: pointer;
+  transform-origin: center;
+  transition: r 0.15s ease, filter 0.15s ease;
+}
+.arc-wrap.in-view .arc-dot {
   animation: pop 0.4s ease forwards;
 }
-.arc-dot:nth-of-type(1) { animation-delay: 0.5s; }
-.arc-dot:nth-of-type(2) { animation-delay: 1.0s; }
-.arc-dot:nth-of-type(3) { animation-delay: 1.5s; }
+.arc-dot:hover {
+  filter: brightness(1.15) drop-shadow(0 0 6px rgba(217,167,59,0.6));
+}
+.arc-wrap svg a:focus-visible .arc-dot {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+.arc-wrap.in-view .arc-dot:nth-of-type(1) { animation-delay: 0.5s; }
+.arc-wrap.in-view .arc-dot:nth-of-type(2) { animation-delay: 1.0s; }
+.arc-wrap.in-view .arc-dot:nth-of-type(3) { animation-delay: 1.5s; }
 
 @keyframes pop {
   from { opacity: 0; transform: scale(0.4); }
