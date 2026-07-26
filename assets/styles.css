@@ -8,15 +8,15 @@
    ========================================================================== */
 
 :root {
-  --indigo: #1B2A4A;
-  --indigo-deep: #101B33;
-  --gold: #E8A33D;
-  --gold-soft: #F2C876;
-  --sage: #7C9473;
-  --paper: #FAF6EF;
-  --ink: #1A1A1A;
-  --ink-soft: #4A5568;
-  --line: rgba(27, 42, 74, 0.12);
+  --indigo: #6E1E2E;
+  --indigo-deep: #3E1019;
+  --gold: #D9A73B;
+  --gold-soft: #F0CE86;
+  --sage: #8A6C4E;
+  --paper: #FBF3E7;
+  --ink: #241512;
+  --ink-soft: #6B564C;
+  --line: rgba(110, 30, 46, 0.14);
 
   --display: "Fraunces", Georgia, serif;
   --body: "Work Sans", -apple-system, sans-serif;
