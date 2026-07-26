@@ -45,14 +45,16 @@
   <div class="wrap">
     <span class="eyebrow">Get Started</span>
     <h2>Request admission information</h2>
-    <form class="contact-form" onsubmit="event.preventDefault(); alert('Thanks! Replace this form action with a real email/backend before launch.');">
+    <form class="contact-form" action="https://formspree.io/f/xaqrankp" method="POST">
+      <input type="hidden" name="_subject" value="New Admissions Enquiry - Dominion Group of Schools">
+      <input type="hidden" name="_next" value="https://dominiongroupofschools.com/thank-you.html">
       <div>
         <label for="parent-name">Parent/Guardian Name</label>
-        <input id="parent-name" type="text" required>
+        <input id="parent-name" name="parent_name" type="text" required>
       </div>
       <div>
         <label for="child-stage">Applying For</label>
-        <select id="child-stage">
+        <select id="child-stage" name="applying_for">
           <option>Nursery</option>
           <option>Primary</option>
           <option>Secondary</option>
@@ -60,11 +62,11 @@
       </div>
       <div>
         <label for="phone">Phone Number</label>
-        <input id="phone" type="tel" required>
+        <input id="phone" name="phone" type="tel" required>
       </div>
       <div>
         <label for="email">Email Address</label>
-        <input id="email" type="email" required>
+        <input id="email" name="email" type="email" required>
       </div>
       <button type="submit" class="btn btn-primary">Submit Enquiry</button>
     </form>
