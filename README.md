@@ -1,36 +1,56 @@
-# Dominion Group of Schools — Website
+# Dominion Group of Schools — Website (Source)
 
-Plain HTML/CSS static site. No build step, no npm needed — works on any static host.
+**Important change:** this repo now holds the *source* for the site, not the
+final HTML. Vercel builds the real site automatically on every push by
+running `python3 build.py`, which reads everything (including news posts)
+and produces the final site in `output/`.
 
-## Deploy to Vercel (free)
-1. Create a GitHub repo, push this folder's contents to it.
-2. Go to vercel.com → New Project → import the repo.
-3. Framework preset: "Other". Build command: leave blank. Output directory: leave blank (root).
-4. Deploy. Vercel gives you a `*.vercel.app` URL immediately.
-5. In Vercel: Project → Settings → Domains → add `dominiongroupofschools.com`.
-6. In GoDaddy DNS settings for the domain, add the records Vercel shows you
-   (usually an A record to 76.76.21.21 and a CNAME for `www`).
-7. Propagation takes anywhere from a few minutes to a few hours.
+You should no longer copy files from a Claude-generated `output/` folder
+into this repo. Just edit the source files below and push — Vercel does
+the rest.
 
-Netlify works the same way (drag-and-drop the folder at app.netlify.com/drop
-also works for a quick preview, no git needed).
+## What's in here
 
-## What to replace before launch
-- `assets/` — swap the placeholder `.placeholder-img` divs in about.html,
-  news.html for real `<img src="assets/photos/...">` once you have photos.
-- Contact details (phone, address, email) — currently placeholders in
-  every page's footer and contact.html.
-- Leadership names/bios in about.html.
-- News posts in news.html — currently sample content.
-- The two forms (admissions.html, contact.html) currently just show an
-  alert on submit. Wire them to a real service (e.g. Formspree, Netlify
-  Forms, or a simple backend) so submissions actually reach an inbox.
+- `build.py` — generates the whole site. Run `python3 build.py` locally to
+  preview changes.
+- `content/news/*.md` — one file per news post. This is what the staff CMS
+  edits directly on GitHub — no need to touch `build.py` to add news.
+- `assets/styles.css`, `assets/photos/` — styling and images.
+- `admin/` — the staff Content Manager (Decap CMS). Lives at
+  `dominiongroupofschools.com/admin`.
+- `api/auth.js`, `api/callback.js` — the login bridge that lets the CMS
+  securely authenticate staff through GitHub. Requires environment
+  variables set in Vercel (see setup steps below).
+- `vercel.json` — tells Vercel to run `python3 build.py` and serve
+  `output/` as the live site.
 
-## Structure
-- `index.html` — Home
-- `about.html` — About/mission/leadership
-- `academics.html` — Nursery/Primary/Secondary curriculum
-- `admissions.html` — Admissions process + enquiry form
-- `news.html` — News/events
-- `contact.html` — Contact form + details
-- `assets/styles.css` — all styling, one shared file
+## One-time setup still required
+
+1. **Create a GitHub OAuth App** at
+   github.com/settings/developers → OAuth Apps → New OAuth App
+   - Application name: `Dominion Site CMS`
+   - Homepage URL: `https://dominiongroupofschools.com`
+   - Authorization callback URL: `https://dominiongroupofschools.com/api/callback`
+   - Generate a Client Secret and copy both the Client ID and Client Secret.
+
+2. **Add environment variables in Vercel**
+   Project → Settings → Environment Variables:
+   - `GITHUB_OAUTH_CLIENT_ID`
+   - `GITHUB_OAUTH_CLIENT_SECRET`
+   Apply to Production, then redeploy.
+
+3. **Give the staff member GitHub access**
+   They need a free GitHub account. Add them as a Collaborator on this repo
+   (Settings → Collaborators) so they can log into the CMS and publish.
+
+4. **Staff logs in at** `dominiongroupofschools.com/admin` — click
+   "Login with GitHub", authorize once, and they'll see a simple dashboard
+   to add/edit "News & Events" posts with a title, date, photo and summary.
+   Every publish automatically updates the live site within about a minute.
+
+## Local preview
+
+```bash
+python3 build.py
+```
+Then open `output/index.html` in a browser, or serve the folder locally.
