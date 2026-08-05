@@ -2,7 +2,7 @@ backend:
   name: github
   repo: thecotilking/dominion-group-of-schools
   branch: main
-  base_url: https://dominiongroupofschools.com
+  base_url: https://www.dominiongroupofschools.com
   auth_endpoint: api/auth
 
 media_folder: "assets/photos/news-uploads"
