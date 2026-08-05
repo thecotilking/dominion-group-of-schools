@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+  res.setHeader("Cross-Origin-Opener-Policy", "unsafe-none");
   const clientId = process.env.GITHUB_OAUTH_CLIENT_ID;
   const clientSecret = process.env.GITHUB_OAUTH_CLIENT_SECRET;
   const code = req.query.code;
