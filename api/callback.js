@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+  res.setHeader("Cross-Origin-Opener-Policy", "unsafe-none");
   const clientId = process.env.GITHUB_OAUTH_CLIENT_ID;
   const clientSecret = process.env.GITHUB_OAUTH_CLIENT_SECRET;
   const code = req.query.code;
@@ -37,18 +38,44 @@ export default async function handler(req, res) {
     const message = "authorization:github:success:" + payload;
 
     const html = `<!DOCTYPE html>
-<html><body>
+<html><body style="font-family: sans-serif; padding: 24px;">
+<p id="status">Connecting back to the CMS...</p>
 <script>
 (function() {
-  function receiveMessage(e) {
-    window.opener.postMessage(${JSON.stringify(message)}, e.origin);
-    window.removeEventListener("message", receiveMessage, false);
+  var statusEl = document.getElementById('status');
+  var message = ${JSON.stringify(message)};
+
+  if (!window.opener) {
+    statusEl.textContent = "No opener window found. This tab was likely opened without a proper popup link (or a popup blocker interfered). Please close this tab, disable any popup blocker for this site, and click 'Login with GitHub' again.";
+    return;
   }
+
+  function send(targetOrigin) {
+    try {
+      window.opener.postMessage(message, targetOrigin);
+    } catch (err) {
+      statusEl.textContent = "Error sending message to opener: " + err.message;
+    }
+  }
+
+  function receiveMessage(e) {
+    send(e.origin);
+    statusEl.textContent = "Authenticated. Closing this window...";
+    window.removeEventListener("message", receiveMessage, false);
+    setTimeout(function() { window.close(); }, 800);
+  }
+
   window.addEventListener("message", receiveMessage, false);
   window.opener.postMessage("authorizing:github", "*");
+
+  // Fallback: if opener never replies within 2s, send directly to any origin
+  // so the CMS can still pick it up even if the handshake ping is missed.
+  setTimeout(function() {
+    send("*");
+    statusEl.textContent = "Authenticated. If this tab does not close automatically, you can close it and return to the CMS tab.";
+  }, 2000);
 })();
 </script>
-<p>Authenticated. You can close this window if it does not close automatically.</p>
 </body></html>`;
 
     res.setHeader("Content-Type", "text/html");

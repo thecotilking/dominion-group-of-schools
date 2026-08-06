@@ -19,11 +19,34 @@ def parse_markdown(filepath):
         return None
     frontmatter_raw, body = parts[1], parts[2]
     data = {}
-    for line in frontmatter_raw.strip().split("\n"):
-        if ":" not in line:
+    lines = frontmatter_raw.strip("\n").split("\n")
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if not line.strip() or ":" not in line:
+            i += 1
             continue
         key, _, value = line.partition(":")
-        data[key.strip()] = value.strip()
+        key = key.strip()
+        value = value.strip()
+        if value:
+            data[key] = value
+            i += 1
+        else:
+            # Possible list: look ahead for "  - " lines
+            items = []
+            j = i + 1
+            while j < len(lines) and lines[j].strip().startswith("-"):
+                item_line = lines[j].strip()[1:].strip()
+                if ":" in item_line:
+                    # dict-style list item, e.g. "image: path.jpg" -> take the value
+                    _, _, item_val = item_line.partition(":")
+                    items.append(item_val.strip())
+                elif item_line:
+                    items.append(item_line)
+                j += 1
+            data[key] = items
+            i = j
     data["body"] = body.strip()
     return data
 
@@ -165,6 +188,22 @@ def page(title, description, active, body, extra_class=""):
     link.addEventListener('click', function() {{
       document.querySelector('.main-nav').classList.remove('open');
     }});
+  }});
+  window.openModal = function(id) {{
+    var el = document.getElementById(id);
+    if (el) {{ el.classList.add('open'); document.body.style.overflow = 'hidden'; }}
+  }};
+  window.closeModal = function(id) {{
+    var el = document.getElementById(id);
+    if (el) {{ el.classList.remove('open'); document.body.style.overflow = ''; }}
+  }};
+  document.addEventListener('keydown', function(e) {{
+    if (e.key === 'Escape') {{
+      document.querySelectorAll('.modal-overlay.open').forEach(function(el) {{
+        el.classList.remove('open');
+      }});
+      document.body.style.overflow = '';
+    }}
   }});
 }})();
 </script>
@@ -473,22 +512,49 @@ with open("output/admissions.html", "w") as f:
 # ---------------- NEWS (now dynamic, read from content/news/*.md) ----------------
 news_items = load_news()
 news_cards = ""
-for item in news_items:
-    img = item.get("image", "").strip()
+news_modals = ""
+for idx, item in enumerate(news_items):
+    modal_id = f"news-modal-{idx}"
+    images = item.get("images") or []
+    images = [img for img in images if img]
+    if not images and item.get("image"):
+        images = [item["image"]]
     body_text = item.get("body", "")
-    if img:
+    title = item.get("title", "")
+    date_display = item.get("date", "")[:10]
+    cover = images[0] if images else ""
+
+    if cover:
         news_cards += f'''
-      <div class="card" style="padding:0; overflow:hidden;">
-        <img src="{img}" alt="{item['title']}" style="border-radius:14px 14px 0 0;">
-        <div style="padding:18px;"><h3>{item['title']}</h3><p>{body_text}</p></div>
+      <div class="card news-card-trigger" style="padding:0; overflow:hidden;" onclick="openModal('{modal_id}')">
+        <img src="{cover}" alt="{title}" style="border-radius:14px 14px 0 0;">
+        <div style="padding:18px;"><h3>{title}</h3><p class="news-excerpt">{body_text}</p><button class="read-more-btn">Read More</button></div>
       </div>'''
     else:
         news_cards += f'''
-      <div class="card">
+      <div class="card news-card-trigger" onclick="openModal('{modal_id}')">
         <div class="placeholder-img">Event photo</div>
-        <h3 style="margin-top:14px;">{item['title']}</h3>
-        <p>{body_text}</p>
+        <h3 style="margin-top:14px;">{title}</h3>
+        <p class="news-excerpt">{body_text}</p>
+        <button class="read-more-btn">Read More</button>
       </div>'''
+
+    gallery_html = ""
+    if images:
+        gallery_html = '<div class="modal-gallery">' + "".join(
+            f'<img src="{img}" alt="{title}">' for img in images
+        ) + "</div>"
+
+    news_modals += f'''
+  <div class="modal-overlay" id="{modal_id}" onclick="if(event.target===this) closeModal('{modal_id}')">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('{modal_id}')" aria-label="Close">&times;</button>
+      <div class="modal-date">{date_display}</div>
+      <h2 style="margin-bottom:4px;">{title}</h2>
+      {gallery_html}
+      <p style="white-space: pre-wrap;">{body_text}</p>
+    </div>
+  </div>'''
 
 news_body = f'''
 <section class="page-hero">
@@ -522,6 +588,7 @@ news_body = f'''
     </div>
   </div>
 </section>
+{news_modals}
 '''
 with open("output/news.html", "w") as f:
     f.write(page("News", "Latest news and events from Dominion Group of Schools.", "news.html", news_body))

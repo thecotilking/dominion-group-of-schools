@@ -1,4 +1,5 @@
 export default function handler(req, res) {
+  res.setHeader("Cross-Origin-Opener-Policy", "unsafe-none");
   const clientId = process.env.GITHUB_OAUTH_CLIENT_ID;
   const host = req.headers.host;
   const redirectUri = `https://${host}/api/callback`;

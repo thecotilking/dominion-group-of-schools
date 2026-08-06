@@ -1,4 +1,18 @@
 {
   "buildCommand": "python3 build.py",
-  "outputDirectory": "output"
+  "outputDirectory": "output",
+  "headers": [
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        { "key": "Cross-Origin-Opener-Policy", "value": "unsafe-none" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cross-Origin-Opener-Policy", "value": "unsafe-none" }
+      ]
+    }
+  ]
 }
