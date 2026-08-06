@@ -2,6 +2,11 @@
 title: Cultural day 2024
 date: 2026-08-06
 image: assets/photos/news-uploads/img_3736.jpeg
+spotlight: false
+images:
+  - assets/photos/news-uploads/img_3736.jpeg
+  - assets/photos/news-uploads/img_3737.jpeg
+  - assets/photos/news-uploads/img_3739.jpeg
 ---
 Cultural Day at Dominion Group of Schools
 
