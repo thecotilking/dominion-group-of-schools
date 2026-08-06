@@ -566,6 +566,53 @@ section { padding: 72px 0; }
 .event-gallery:has(img:only-child) img {
   aspect-ratio: 16/9;
 }
+.event-gallery img { cursor: zoom-in; }
+
+/* ---------- Lightbox (full image view) ---------- */
+
+.lightbox-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 12, 10, 0.92);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  cursor: zoom-out;
+}
+.lightbox-overlay.open { display: flex; }
+.lightbox-overlay img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.modal-close {
+  background: var(--indigo);
+  color: var(--paper);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+  z-index: 301;
+}
+.modal-close:hover { background: var(--gold); color: var(--indigo-deep); }
+
+/* ---------- Compact spotlight (homepage variant) ---------- */
+
+.spotlight-compact .spotlight-banner img {
+  max-height: 220px;
+}
+.spotlight-compact .spotlight-banner-content {
+  padding: 16px 20px 20px;
+}
+.spotlight-compact .spotlight-banner-content h2 {
+  font-size: 1.3rem;
+}
 
 /* ---------- CTA band ---------- */
 

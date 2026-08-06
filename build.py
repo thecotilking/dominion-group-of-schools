@@ -169,6 +169,10 @@ def page(title, description, active, body, extra_class=""):
 {header(active)}
 {body}
 {footer()}
+<div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox()">
+  <button class="modal-close" onclick="closeLightbox()" aria-label="Close" style="position:fixed; top:20px; right:20px;">&times;</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
 <script>
 (function() {{
   var arc = document.querySelector('.arc-wrap');
@@ -191,6 +195,7 @@ def page(title, description, active, body, extra_class=""):
     }});
   }});
   var spotlightIndex = 0;
+  var spotlightTimer = null;
   function showSpotlight(idx) {{
     var slides = document.querySelectorAll('.spotlight-banner');
     var dots = document.querySelectorAll('.spotlight-dot');
@@ -199,8 +204,33 @@ def page(title, description, active, body, extra_class=""):
     slides.forEach(function(s, i) {{ s.classList.toggle('active', i === spotlightIndex); }});
     dots.forEach(function(d, i) {{ d.classList.toggle('active', i === spotlightIndex); }});
   }}
-  window.shiftSpotlight = function(dir) {{ showSpotlight(spotlightIndex + dir); }};
-  window.goToSpotlight = function(idx) {{ showSpotlight(idx); }};
+  function restartSpotlightTimer() {{
+    if (spotlightTimer) clearInterval(spotlightTimer);
+    var slides = document.querySelectorAll('.spotlight-banner');
+    if (slides.length > 1) {{
+      spotlightTimer = setInterval(function() {{ showSpotlight(spotlightIndex + 1); }}, 6000);
+    }}
+  }}
+  window.shiftSpotlight = function(dir) {{ showSpotlight(spotlightIndex + dir); restartSpotlightTimer(); }};
+  window.goToSpotlight = function(idx) {{ showSpotlight(idx); restartSpotlightTimer(); }};
+  restartSpotlightTimer();
+
+  window.openLightbox = function(src) {{
+    var overlay = document.getElementById('lightbox-overlay');
+    var img = document.getElementById('lightbox-img');
+    if (overlay && img) {{
+      img.src = src;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }}
+  }};
+  window.closeLightbox = function() {{
+    var overlay = document.getElementById('lightbox-overlay');
+    if (overlay) {{ overlay.classList.remove('open'); document.body.style.overflow = ''; }}
+  }};
+  document.addEventListener('keydown', function(e) {{
+    if (e.key === 'Escape') {{ window.closeLightbox(); }}
+  }});
 }})();
 </script>
 </body>
@@ -212,8 +242,73 @@ if os.path.exists("output"):
     shutil.rmtree("output")
 os.makedirs("output", exist_ok=True)
 
+# ---------------- News data + Spotlight (needed by HOME too) ----------------
+# ---------------- NEWS (dynamic, read from content/news/*.md) ----------------
+news_items = load_news()
+spotlight_items = [item for item in news_items if str(item.get("spotlight", "")).strip().lower() == "true"]
+
+def get_images(item):
+    images = [img for img in (item.get("images") or []) if img]
+    if not images and item.get("image"):
+        images = [item["image"]]
+    return [img if img.startswith("/") else "/" + img for img in images]
+
+def build_spotlight_section(compact=False):
+    if not spotlight_items:
+        return ""
+    slides = ""
+    for idx, item in enumerate(spotlight_items):
+        images = get_images(item)
+        cover = images[0] if images else ""
+        date_display = item.get("date", "")[:10]
+        title = item.get("title", "")
+        excerpt = item.get("body", "")
+        active_class = " active" if idx == 0 else ""
+        img_html = f'<img src="{cover}" alt="{title}">' if cover else '<div class="placeholder-img" style="aspect-ratio:16/7;">No photo</div>'
+        excerpt_html = "" if compact else f'<p class="news-excerpt">{excerpt}</p>'
+        slides += f'''
+    <a href="/news/{item['slug']}.html" class="spotlight-banner{active_class}" data-index="{idx}">
+      {img_html}
+      <div class="spotlight-banner-content">
+        <span class="spotlight-date">{date_display}</span>
+        <h2>{title}</h2>
+        {excerpt_html}
+        <span class="btn btn-primary" style="margin-top:12px;">Read Full Story</span>
+      </div>
+    </a>'''
+
+    dots = ""
+    if len(spotlight_items) > 1:
+        for idx in range(len(spotlight_items)):
+            active = " active" if idx == 0 else ""
+            dots += f'<button class="spotlight-dot{active}" onclick="goToSpotlight({idx})" aria-label="Go to slide {idx+1}"></button>'
+
+    arrows = ""
+    if len(spotlight_items) > 1:
+        arrows = '''
+      <button class="spotlight-arrow spotlight-arrow-left" onclick="shiftSpotlight(-1)" aria-label="Previous">&#8592;</button>
+      <button class="spotlight-arrow spotlight-arrow-right" onclick="shiftSpotlight(1)" aria-label="Next">&#8594;</button>'''
+
+    wrap_class = "spotlight-banner-wrap spotlight-compact" if compact else "spotlight-banner-wrap"
+    eyebrow = "Latest Highlight" if compact else "Spotlight"
+
+    return f'''
+<section style="padding-top:0;">
+  <div class="wrap">
+    <span class="eyebrow">{eyebrow}</span>
+    <div class="{wrap_class}">
+      {slides}
+      {arrows}
+    </div>
+    <div class="spotlight-dots">{dots}</div>
+  </div>
+</section>'''
+
+home_spotlight_section = build_spotlight_section(compact=True)
+news_spotlight_section = build_spotlight_section(compact=False)
+
 # ---------------- HOME ----------------
-home_body = '''
+home_body = f'''
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
@@ -240,7 +335,7 @@ home_body = '''
     </div>
   </div>
 </section>
-
+{home_spotlight_section}
 <section class="stages">
   <div class="wrap">
     <span class="eyebrow" style="color:var(--gold);">The Dominion Journey</span>
@@ -533,61 +628,6 @@ admissions_body = '''
 with open("output/admissions.html", "w") as f:
     f.write(page("Admissions", "Start the admissions process at Dominion Group of Schools.", "admissions.html", admissions_body))
 
-# ---------------- NEWS (dynamic, read from content/news/*.md) ----------------
-news_items = load_news()
-spotlight_items = [item for item in news_items if str(item.get("spotlight", "")).strip().lower() == "true"]
-
-def get_images(item):
-    images = [img for img in (item.get("images") or []) if img]
-    if not images and item.get("image"):
-        images = [item["image"]]
-    return [img if img.startswith("/") else "/" + img for img in images]
-
-# ---- Full-width spotlight banner slider ----
-spotlight_slides = ""
-for idx, item in enumerate(spotlight_items):
-    images = get_images(item)
-    cover = images[0] if images else ""
-    date_display = item.get("date", "")[:10]
-    title = item.get("title", "")
-    excerpt = item.get("body", "")
-    active_class = " active" if idx == 0 else ""
-    img_html = f'<img src="{cover}" alt="{title}">' if cover else '<div class="placeholder-img" style="aspect-ratio:16/7;">No photo</div>'
-    spotlight_slides += f'''
-    <a href="/news/{item['slug']}.html" class="spotlight-banner{active_class}" data-index="{idx}">
-      {img_html}
-      <div class="spotlight-banner-content">
-        <span class="spotlight-date">{date_display}</span>
-        <h2>{title}</h2>
-        <p class="news-excerpt">{excerpt}</p>
-        <span class="btn btn-primary" style="margin-top:12px;">Read Full Story</span>
-      </div>
-    </a>'''
-
-spotlight_dots = ""
-if len(spotlight_items) > 1:
-    for idx in range(len(spotlight_items)):
-        active = " active" if idx == 0 else ""
-        spotlight_dots += f'<button class="spotlight-dot{active}" onclick="goToSpotlight({idx})" aria-label="Go to slide {idx+1}"></button>'
-
-spotlight_section = ""
-if spotlight_slides:
-    arrows = ""
-    if len(spotlight_items) > 1:
-        arrows = '''
-      <button class="spotlight-arrow spotlight-arrow-left" onclick="shiftSpotlight(-1)" aria-label="Previous">&#8592;</button>
-      <button class="spotlight-arrow spotlight-arrow-right" onclick="shiftSpotlight(1)" aria-label="Next">&#8594;</button>'''
-    spotlight_section = f'''
-<section style="padding-top:0;">
-  <div class="wrap">
-    <span class="eyebrow">Spotlight</span>
-    <div class="spotlight-banner-wrap" id="spotlight-wrap">
-      {spotlight_slides}
-      {arrows}
-    </div>
-    <div class="spotlight-dots">{spotlight_dots}</div>
-  </div>
-</section>'''
 
 # ---- Regular news grid (links to individual pages) ----
 news_cards = ""
@@ -620,7 +660,7 @@ news_body = f'''
     <p>What's happening across the Dominion community.</p>
   </div>
 </section>
-{spotlight_section}
+{news_spotlight_section}
 <section>
   <div class="wrap">
     <div class="card-grid">
@@ -662,7 +702,7 @@ for item in news_items:
     gallery_html = ""
     if images:
         gallery_html = '<div class="event-gallery">' + "".join(
-            f'<img src="{img}" alt="{title}">' for img in images
+            f'<img src="{img}" alt="{title}" onclick="openLightbox(this.src)">' for img in images
         ) + "</div>"
     else:
         gallery_html = '<div class="placeholder-img" style="aspect-ratio:16/9;">No photo</div>'
