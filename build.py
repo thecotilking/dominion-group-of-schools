@@ -162,10 +162,6 @@ def page(title, description, active, body, extra_class=""):
 </script>
 {FONTS}
 <link rel="stylesheet" href="assets/styles.css">
-<script>
-window.va = window.va || function () {{ (window.vaq = window.vaq || []).push(arguments); }};
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="{extra_class}">
 <div class="site-notice">🎓 We're Hiring! Physics, English, Chemistry &amp; Biology teachers wanted.<a href="news.html#hiring">View Details</a></div>
@@ -200,6 +196,10 @@ window.va = window.va || function () {{ (window.vaq = window.vaq || []).push(arg
   window.closeModal = function(id) {{
     var el = document.getElementById(id);
     if (el) {{ el.classList.remove('open'); document.body.style.overflow = ''; }}
+  }};
+  window.scrollSpotlight = function(direction) {{
+    var row = document.getElementById('spotlight-row');
+    if (row) {{ row.scrollBy({{ left: direction * 240, behavior: 'smooth' }}); }}
   }};
   document.addEventListener('keydown', function(e) {{
     if (e.key === 'Escape') {{
@@ -373,9 +373,24 @@ about_body = '''
 </section>
 <section>
   <div class="wrap">
+    <span class="eyebrow">Our Campuses</span>
+    <h2>Two campuses, one Dominion</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Dominion College &amp; Nur/Pri Annex</h3>
+        <p>1 Dominion School Road, off Hospital Road, Ugboma Layout, Asaba, Delta State</p>
+      </div>
+      <div class="card">
+        <h3>Dominion Nursery/Primary School</h3>
+        <p>7 Osowe Street, Ogbeosowe, Asaba, Delta State</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
     <span class="eyebrow">Leadership</span>
     <h2>Meet our team</h2>
-    <p class="section-intro">Principal and Vice Principal photos coming soon.</p>
     <div class="card-grid">
       <div class="card">
         <img src="assets/photos/proprietress.jpg" alt="Rev. Mrs. Esther Ebolum, Founder and Proprietress" class="leader-photo">
@@ -387,8 +402,21 @@ about_body = '''
         <h3 style="margin-top:14px;">Bishop Ken Ebolum</h3>
         <p>Chairman &mdash; Founder, Dominion Christian Center</p>
       </div>
-      <div class="card"><div class="placeholder-img">Photo coming soon</div><h3 style="margin-top:14px;">Blessing</h3><p>Principal</p></div>
-      <div class="card"><div class="placeholder-img">Photo coming soon</div><h3 style="margin-top:14px;">Mr. Prosper Nwankwo</h3><p>Vice Principal</p></div>
+      <div class="card">
+        <img src="assets/photos/blessing-okonta.jpg" alt="Mrs. Blessing Okonta, Principal" class="leader-photo">
+        <h3 style="margin-top:14px;">Mrs. Blessing Okonta</h3>
+        <p>Principal</p>
+      </div>
+      <div class="card">
+        <img src="assets/photos/prosper-nwankwo.jpg" alt="Mr. Prosper Nwankwo, Vice Principal" class="leader-photo">
+        <h3 style="margin-top:14px;">Mr. Prosper Nwankwo</h3>
+        <p>Vice Principal</p>
+      </div>
+      <div class="card">
+        <img src="assets/photos/kenneth-nnabugwu.jpg" alt="Mr. Kenneth Nnabugwu, Assistant Administrator" class="leader-photo">
+        <h3 style="margin-top:14px;">Mr. Kenneth Nnabugwu</h3>
+        <p>Assistant Administrator</p>
+      </div>
     </div>
   </div>
 </section>
@@ -515,10 +543,44 @@ with open("output/admissions.html", "w") as f:
 
 # ---------------- NEWS (now dynamic, read from content/news/*.md) ----------------
 news_items = load_news()
+spotlight_items = [item for item in news_items if str(item.get("spotlight", "")).strip().lower() == "true"]
+
+spotlight_strip = ""
+for idx, item in enumerate(spotlight_items):
+    modal_id = f"spotlight-modal-{idx}"
+    images = [img for img in (item.get("images") or []) if img]
+    cover = images[0] if images else ""
+    date_display = item.get("date", "")[:10]
+    img_tag = f'<img src="{cover}" alt="{item.get("title","")}">' if cover else '<div class="placeholder-img" style="aspect-ratio:1/1;">No photo</div>'
+    spotlight_strip += f'''
+      <div class="spotlight-card" onclick="openModal('{modal_id}')">
+        {img_tag}
+        <div class="spotlight-card-body">
+          <span class="spotlight-date">{date_display}</span>
+          <h3>{item.get("title","")}</h3>
+        </div>
+      </div>'''
+
+spotlight_section = ""
+if spotlight_strip:
+    spotlight_section = f'''
+<section style="padding-top:0;">
+  <div class="wrap">
+    <span class="eyebrow">Spotlight</span>
+    <div class="spotlight-row-wrap">
+      <button class="spotlight-arrow spotlight-arrow-left" onclick="scrollSpotlight(-1)" aria-label="Scroll left">&#8592;</button>
+      <div class="spotlight-row" id="spotlight-row">{spotlight_strip}
+      </div>
+      <button class="spotlight-arrow spotlight-arrow-right" onclick="scrollSpotlight(1)" aria-label="Scroll right">&#8594;</button>
+    </div>
+  </div>
+</section>'''
+
 news_cards = ""
 news_modals = ""
 for idx, item in enumerate(news_items):
-    modal_id = f"news-modal-{idx}"
+    is_spotlight = item in spotlight_items
+    modal_id = f"spotlight-modal-{spotlight_items.index(item)}" if is_spotlight else f"news-modal-{idx}"
     images = item.get("images") or []
     images = [img for img in images if img]
     if not images and item.get("image"):
@@ -549,6 +611,10 @@ for idx, item in enumerate(news_items):
             f'<img src="{img}" alt="{title}">' for img in images
         ) + "</div>"
 
+    cta_html = ""
+    if is_spotlight:
+        cta_html = '<a href="admissions.html" class="btn btn-primary" style="margin-top:16px;">Apply Now</a>'
+
     news_modals += f'''
   <div class="modal-overlay" id="{modal_id}" onclick="if(event.target===this) closeModal('{modal_id}')">
     <div class="modal-content">
@@ -557,6 +623,7 @@ for idx, item in enumerate(news_items):
       <h2 style="margin-bottom:4px;">{title}</h2>
       {gallery_html}
       <p style="white-space: pre-wrap;">{body_text}</p>
+      {cta_html}
     </div>
   </div>'''
 
@@ -567,6 +634,7 @@ news_body = f'''
     <p>What's happening across the Dominion community.</p>
   </div>
 </section>
+{spotlight_section}
 <section>
   <div class="wrap">
     <div class="card-grid">
@@ -625,8 +693,10 @@ contact_body = '''
       <button type="submit" class="btn btn-primary">Send Message</button>
     </form>
     <div class="card">
-      <h3>Visit Us</h3>
+      <h3>Visit Us &mdash; College &amp; Nur/Pri Annex</h3>
       <p>1 Dominion School Road, off Hospital Road, Ugboma Layout, Asaba, Delta State</p>
+      <h3>Visit Us &mdash; Nursery/Primary School</h3>
+      <p>7 Osowe Street, Ogbeosowe, Asaba, Delta State</p>
       <h3>Call Us</h3>
       <p>0705 574 2394</p>
       <h3>Email Us</h3>
