@@ -5,7 +5,7 @@ from datetime import date, datetime
 
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">'
 
-LOGO_SVG = '''<img src="assets/photos/logo.jpg" alt="Dominion Group of Schools crest" class="brand-mark" style="border-radius:50%; object-fit:cover;">'''
+LOGO_SVG = '''<img src="/assets/photos/logo.jpg" alt="Dominion Group of Schools crest" class="brand-mark" style="border-radius:50%; object-fit:cover;">'''
 
 SITE_URL = "https://dominiongroupofschools.com"
 
@@ -58,6 +58,7 @@ def load_news():
             if fname.endswith(".md"):
                 item = parse_markdown(os.path.join(news_dir, fname))
                 if item and item.get("title"):
+                    item["slug"] = fname[:-3]
                     items.append(item)
     def sort_key(item):
         try:
@@ -71,27 +72,27 @@ def load_news():
 
 def header(active):
     links = [
-        ("index.html", "Home"),
-        ("about.html", "About"),
-        ("academics.html", "Academics"),
-        ("admissions.html", "Admissions"),
-        ("news.html", "News"),
-        ("contact.html", "Contact"),
+        ("/index.html", "Home"),
+        ("/about.html", "About"),
+        ("/academics.html", "Academics"),
+        ("/admissions.html", "Admissions"),
+        ("/news.html", "News"),
+        ("/contact.html", "Contact"),
     ]
     nav_items = ""
     for href, label in links:
-        current = ' aria-current="page"' if href == active else ""
+        current = ' aria-current="page"' if href.lstrip("/") == active.lstrip("/") else ""
         nav_items += f'<a href="{href}"{current}>{label}</a>'
     return f'''<header class="site-header">
   <div class="nav-row">
-    <a href="index.html" class="brand">
+    <a href="/index.html" class="brand">
       {LOGO_SVG}
       <span class="brand-name">Dominion Group<small>of Schools</small></span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" onclick="document.querySelector('.main-nav').classList.toggle('open')">☰</button>
     <nav class="main-nav">
       {nav_items}
-      <a href="admissions.html" class="btn btn-gold" style="padding:10px 20px;">Apply Now</a>
+      <a href="/admissions.html" class="btn btn-gold" style="padding:10px 20px;">Apply Now</a>
     </nav>
   </div>
 </header>'''
@@ -107,10 +108,10 @@ def footer():
       <div>
         <h4>Explore</h4>
         <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="academics.html">Academics</a></li>
-          <li><a href="admissions.html">Admissions</a></li>
-          <li><a href="news.html">News &amp; Events</a></li>
+          <li><a href="/about.html">About Us</a></li>
+          <li><a href="/academics.html">Academics</a></li>
+          <li><a href="/admissions.html">Admissions</a></li>
+          <li><a href="/news.html">News &amp; Events</a></li>
         </ul>
       </div>
       <div>
@@ -161,10 +162,10 @@ def page(title, description, active, body, extra_class=""):
 }}
 </script>
 {FONTS}
-<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body class="{extra_class}">
-<div class="site-notice">🎓 We're Hiring! Physics, English, Chemistry &amp; Biology teachers wanted.<a href="news.html#hiring">View Details</a></div>
+<div class="site-notice">🎓 We're Hiring! Physics, English, Chemistry &amp; Biology teachers wanted.<a href="/news.html#hiring">View Details</a></div>
 {header(active)}
 {body}
 {footer()}
@@ -189,26 +190,17 @@ def page(title, description, active, body, extra_class=""):
       document.querySelector('.main-nav').classList.remove('open');
     }});
   }});
-  window.openModal = function(id) {{
-    var el = document.getElementById(id);
-    if (el) {{ el.classList.add('open'); document.body.style.overflow = 'hidden'; }}
-  }};
-  window.closeModal = function(id) {{
-    var el = document.getElementById(id);
-    if (el) {{ el.classList.remove('open'); document.body.style.overflow = ''; }}
-  }};
-  window.scrollSpotlight = function(direction) {{
-    var row = document.getElementById('spotlight-row');
-    if (row) {{ row.scrollBy({{ left: direction * 240, behavior: 'smooth' }}); }}
-  }};
-  document.addEventListener('keydown', function(e) {{
-    if (e.key === 'Escape') {{
-      document.querySelectorAll('.modal-overlay.open').forEach(function(el) {{
-        el.classList.remove('open');
-      }});
-      document.body.style.overflow = '';
-    }}
-  }});
+  var spotlightIndex = 0;
+  function showSpotlight(idx) {{
+    var slides = document.querySelectorAll('.spotlight-banner');
+    var dots = document.querySelectorAll('.spotlight-dot');
+    if (!slides.length) return;
+    spotlightIndex = (idx + slides.length) % slides.length;
+    slides.forEach(function(s, i) {{ s.classList.toggle('active', i === spotlightIndex); }});
+    dots.forEach(function(d, i) {{ d.classList.toggle('active', i === spotlightIndex); }});
+  }}
+  window.shiftSpotlight = function(dir) {{ showSpotlight(spotlightIndex + dir); }};
+  window.goToSpotlight = function(idx) {{ showSpotlight(idx); }};
 }})();
 </script>
 </body>
@@ -229,8 +221,8 @@ home_body = '''
       <h1>Every stage of childhood, carried with the same care.</h1>
       <p class="lead">Dominion Group of Schools walks with your child from their very first day of nursery to their final secondary exam &mdash; one community, one standard of excellence, all the way through.</p>
       <div class="hero-actions">
-        <a href="admissions.html" class="btn btn-primary">Start Admissions</a>
-        <a href="about.html" class="btn btn-outline">Our Story</a>
+        <a href="/admissions.html" class="btn btn-primary">Start Admissions</a>
+        <a href="/about.html" class="btn btn-outline">Our Story</a>
       </div>
     </div>
     <div class="arc-wrap">
@@ -305,19 +297,19 @@ home_body = '''
     <h2>A campus built for learning and growth</h2>
     <div class="card-grid">
       <div class="card" style="padding:0; overflow:hidden;">
-        <img src="assets/photos/campus-exterior-1.jpg" alt="Dominion Group of Schools campus building" style="border-radius:14px 14px 0 0;">
+        <img src="/assets/photos/campus-exterior-1.jpg" alt="Dominion Group of Schools campus building" style="border-radius:14px 14px 0 0;">
         <div style="padding:18px;"><h3>Our Campus</h3><p>Dominion College and Dominion Nursery/Primary School share one secure campus.</p></div>
       </div>
       <div class="card" style="padding:0; overflow:hidden;">
-        <img src="assets/photos/science-lab-1.jpg" alt="Student in the science laboratory" style="border-radius:14px 14px 0 0;">
+        <img src="/assets/photos/science-lab-1.jpg" alt="Student in the science laboratory" style="border-radius:14px 14px 0 0;">
         <div style="padding:18px;"><h3>Science Laboratory</h3><p>Hands-on practicals give secondary students real lab experience ahead of WAEC/NECO.</p></div>
       </div>
       <div class="card" style="padding:0; overflow:hidden;">
-        <img src="assets/photos/classroom-students.jpg" alt="Students in class and walking on campus" style="border-radius:14px 14px 0 0;">
+        <img src="/assets/photos/classroom-students.jpg" alt="Students in class and walking on campus" style="border-radius:14px 14px 0 0;">
         <div style="padding:18px;"><h3>Everyday Learning</h3><p>Attentive teachers and focused classrooms, day to day.</p></div>
       </div>
       <div class="card" style="padding:0; overflow:hidden;">
-        <img src="assets/photos/graduation.jpg" alt="Dominion primary school graduation ceremony" style="border-radius:14px 14px 0 0;">
+        <img src="/assets/photos/graduation.jpg" alt="Dominion primary school graduation ceremony" style="border-radius:14px 14px 0 0;">
         <div style="padding:18px;"><h3>Milestones</h3><p>Celebrating our pupils at every graduation and achievement.</p></div>
       </div>
     </div>
@@ -332,8 +324,8 @@ home_body = '''
         <p>Book a school tour or start your child's application today.</p>
       </div>
       <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <a href="admissions.html" class="btn btn-primary">Apply Now</a>
-        <a href="contact.html" class="btn btn-outline">Book a Tour</a>
+        <a href="/admissions.html" class="btn btn-primary">Apply Now</a>
+        <a href="/contact.html" class="btn btn-outline">Book a Tour</a>
       </div>
     </div>
   </div>
@@ -393,27 +385,27 @@ about_body = '''
     <h2>Meet our team</h2>
     <div class="card-grid">
       <div class="card">
-        <img src="assets/photos/proprietress.jpg" alt="Rev. Mrs. Esther Ebolum, Founder and Proprietress" class="leader-photo">
+        <img src="/assets/photos/proprietress.jpg" alt="Rev. Mrs. Esther Ebolum, Founder and Proprietress" class="leader-photo">
         <h3 style="margin-top:14px;">Rev. Mrs. Esther Ebolum</h3>
         <p>Founder &amp; Proprietress</p>
       </div>
       <div class="card">
-        <img src="assets/photos/chairman.jpg" alt="Bishop Ken Ebolum, Chairman" class="leader-photo">
+        <img src="/assets/photos/chairman.jpg" alt="Bishop Ken Ebolum, Chairman" class="leader-photo">
         <h3 style="margin-top:14px;">Bishop Ken Ebolum</h3>
         <p>Chairman &mdash; Founder, Dominion Christian Center</p>
       </div>
       <div class="card">
-        <img src="assets/photos/blessing-okonta.jpg" alt="Mrs. Blessing Okonta, Principal" class="leader-photo">
+        <img src="/assets/photos/blessing-okonta.jpg" alt="Mrs. Blessing Okonta, Principal" class="leader-photo">
         <h3 style="margin-top:14px;">Mrs. Blessing Okonta</h3>
         <p>Principal</p>
       </div>
       <div class="card">
-        <img src="assets/photos/prosper-nwankwo.jpg" alt="Mr. Prosper Nwankwo, Vice Principal" class="leader-photo">
+        <img src="/assets/photos/prosper-nwankwo.jpg" alt="Mr. Prosper Nwankwo, Vice Principal" class="leader-photo">
         <h3 style="margin-top:14px;">Mr. Prosper Nwankwo</h3>
         <p>Vice Principal</p>
       </div>
       <div class="card">
-        <img src="assets/photos/kenneth-nnabugwu.jpg" alt="Mr. Kenneth Nnabugwu, Assistant Administrator" class="leader-photo">
+        <img src="/assets/photos/kenneth-nnabugwu.jpg" alt="Mr. Kenneth Nnabugwu, Assistant Administrator" class="leader-photo">
         <h3 style="margin-top:14px;">Mr. Kenneth Nnabugwu</h3>
         <p>Assistant Administrator</p>
       </div>
@@ -459,10 +451,10 @@ academics_body = '''
     <h2>Science, hands-on</h2>
     <div class="card-grid">
       <div class="card" style="padding:0; overflow:hidden;">
-        <img src="assets/photos/science-lab-1.jpg" alt="Secondary student conducting a chemistry experiment">
+        <img src="/assets/photos/science-lab-1.jpg" alt="Secondary student conducting a chemistry experiment">
       </div>
       <div class="card" style="padding:0; overflow:hidden;">
-        <img src="assets/photos/science-lab-2.jpg" alt="Secondary student in the science laboratory">
+        <img src="/assets/photos/science-lab-2.jpg" alt="Secondary student in the science laboratory">
       </div>
     </div>
   </div>
@@ -541,91 +533,85 @@ admissions_body = '''
 with open("output/admissions.html", "w") as f:
     f.write(page("Admissions", "Start the admissions process at Dominion Group of Schools.", "admissions.html", admissions_body))
 
-# ---------------- NEWS (now dynamic, read from content/news/*.md) ----------------
+# ---------------- NEWS (dynamic, read from content/news/*.md) ----------------
 news_items = load_news()
 spotlight_items = [item for item in news_items if str(item.get("spotlight", "")).strip().lower() == "true"]
 
-spotlight_strip = ""
-for idx, item in enumerate(spotlight_items):
-    modal_id = f"spotlight-modal-{idx}"
+def get_images(item):
     images = [img for img in (item.get("images") or []) if img]
+    if not images and item.get("image"):
+        images = [item["image"]]
+    return [img if img.startswith("/") else "/" + img for img in images]
+
+# ---- Full-width spotlight banner slider ----
+spotlight_slides = ""
+for idx, item in enumerate(spotlight_items):
+    images = get_images(item)
     cover = images[0] if images else ""
     date_display = item.get("date", "")[:10]
-    img_tag = f'<img src="{cover}" alt="{item.get("title","")}">' if cover else '<div class="placeholder-img" style="aspect-ratio:1/1;">No photo</div>'
-    spotlight_strip += f'''
-      <div class="spotlight-card" onclick="openModal('{modal_id}')">
-        {img_tag}
-        <div class="spotlight-card-body">
-          <span class="spotlight-date">{date_display}</span>
-          <h3>{item.get("title","")}</h3>
-        </div>
-      </div>'''
+    title = item.get("title", "")
+    excerpt = item.get("body", "")
+    active_class = " active" if idx == 0 else ""
+    img_html = f'<img src="{cover}" alt="{title}">' if cover else '<div class="placeholder-img" style="aspect-ratio:16/7;">No photo</div>'
+    spotlight_slides += f'''
+    <a href="/news/{item['slug']}.html" class="spotlight-banner{active_class}" data-index="{idx}">
+      {img_html}
+      <div class="spotlight-banner-content">
+        <span class="spotlight-date">{date_display}</span>
+        <h2>{title}</h2>
+        <p class="news-excerpt">{excerpt}</p>
+        <span class="btn btn-primary" style="margin-top:12px;">Read Full Story</span>
+      </div>
+    </a>'''
+
+spotlight_dots = ""
+if len(spotlight_items) > 1:
+    for idx in range(len(spotlight_items)):
+        active = " active" if idx == 0 else ""
+        spotlight_dots += f'<button class="spotlight-dot{active}" onclick="goToSpotlight({idx})" aria-label="Go to slide {idx+1}"></button>'
 
 spotlight_section = ""
-if spotlight_strip:
+if spotlight_slides:
+    arrows = ""
+    if len(spotlight_items) > 1:
+        arrows = '''
+      <button class="spotlight-arrow spotlight-arrow-left" onclick="shiftSpotlight(-1)" aria-label="Previous">&#8592;</button>
+      <button class="spotlight-arrow spotlight-arrow-right" onclick="shiftSpotlight(1)" aria-label="Next">&#8594;</button>'''
     spotlight_section = f'''
 <section style="padding-top:0;">
   <div class="wrap">
     <span class="eyebrow">Spotlight</span>
-    <div class="spotlight-row-wrap">
-      <button class="spotlight-arrow spotlight-arrow-left" onclick="scrollSpotlight(-1)" aria-label="Scroll left">&#8592;</button>
-      <div class="spotlight-row" id="spotlight-row">{spotlight_strip}
-      </div>
-      <button class="spotlight-arrow spotlight-arrow-right" onclick="scrollSpotlight(1)" aria-label="Scroll right">&#8594;</button>
+    <div class="spotlight-banner-wrap" id="spotlight-wrap">
+      {spotlight_slides}
+      {arrows}
     </div>
+    <div class="spotlight-dots">{spotlight_dots}</div>
   </div>
 </section>'''
 
+# ---- Regular news grid (links to individual pages) ----
 news_cards = ""
-news_modals = ""
-for idx, item in enumerate(news_items):
-    is_spotlight = item in spotlight_items
-    modal_id = f"spotlight-modal-{spotlight_items.index(item)}" if is_spotlight else f"news-modal-{idx}"
-    images = item.get("images") or []
-    images = [img for img in images if img]
-    if not images and item.get("image"):
-        images = [item["image"]]
+for item in news_items:
+    images = get_images(item)
     body_text = item.get("body", "")
     title = item.get("title", "")
-    date_display = item.get("date", "")[:10]
     cover = images[0] if images else ""
+    url = f"/news/{item['slug']}.html"
 
     if cover:
         news_cards += f'''
-      <div class="card news-card-trigger" style="padding:0; overflow:hidden;" onclick="openModal('{modal_id}')">
+      <a href="{url}" class="card news-card-trigger" style="padding:0; overflow:hidden; display:block; text-decoration:none;">
         <img src="{cover}" alt="{title}" style="border-radius:14px 14px 0 0;">
-        <div style="padding:18px;"><h3>{title}</h3><p class="news-excerpt">{body_text}</p><button class="read-more-btn">Read More</button></div>
-      </div>'''
+        <div style="padding:18px;"><h3>{title}</h3><p class="news-excerpt">{body_text}</p><span class="read-more-btn">Read More</span></div>
+      </a>'''
     else:
         news_cards += f'''
-      <div class="card news-card-trigger" onclick="openModal('{modal_id}')">
+      <a href="{url}" class="card news-card-trigger" style="display:block; text-decoration:none;">
         <div class="placeholder-img">Event photo</div>
         <h3 style="margin-top:14px;">{title}</h3>
         <p class="news-excerpt">{body_text}</p>
-        <button class="read-more-btn">Read More</button>
-      </div>'''
-
-    gallery_html = ""
-    if images:
-        gallery_html = '<div class="modal-gallery">' + "".join(
-            f'<img src="{img}" alt="{title}">' for img in images
-        ) + "</div>"
-
-    cta_html = ""
-    if is_spotlight:
-        cta_html = '<a href="admissions.html" class="btn btn-primary" style="margin-top:16px;">Apply Now</a>'
-
-    news_modals += f'''
-  <div class="modal-overlay" id="{modal_id}" onclick="if(event.target===this) closeModal('{modal_id}')">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeModal('{modal_id}')" aria-label="Close">&times;</button>
-      <div class="modal-date">{date_display}</div>
-      <h2 style="margin-bottom:4px;">{title}</h2>
-      {gallery_html}
-      <p style="white-space: pre-wrap;">{body_text}</p>
-      {cta_html}
-    </div>
-  </div>'''
+        <span class="read-more-btn">Read More</span>
+      </a>'''
 
 news_body = f'''
 <section class="page-hero">
@@ -660,10 +646,52 @@ news_body = f'''
     </div>
   </div>
 </section>
-{news_modals}
 '''
 with open("output/news.html", "w") as f:
     f.write(page("News", "Latest news and events from Dominion Group of Schools.", "news.html", news_body))
+
+# ---- Individual event pages ----
+os.makedirs("output/news", exist_ok=True)
+for item in news_items:
+    images = get_images(item)
+    title = item.get("title", "")
+    date_display = item.get("date", "")[:10]
+    body_text = item.get("body", "")
+    is_spotlight = item in spotlight_items
+
+    gallery_html = ""
+    if images:
+        gallery_html = '<div class="event-gallery">' + "".join(
+            f'<img src="{img}" alt="{title}">' for img in images
+        ) + "</div>"
+    else:
+        gallery_html = '<div class="placeholder-img" style="aspect-ratio:16/9;">No photo</div>'
+
+    cta_html = '<a href="/admissions.html" class="btn btn-primary">Apply Now</a>' if is_spotlight else ""
+
+    event_body = f'''
+<section class="page-hero">
+  <div class="wrap">
+    <a href="/news.html" class="btn btn-outline" style="background:transparent; border-color:var(--paper); color:var(--paper); margin-bottom:18px; display:inline-flex;">&larr; Back to News</a>
+    <div class="modal-date" style="color:var(--gold-soft);">{date_display}</div>
+    <h1>{title}</h1>
+  </div>
+</section>
+<section>
+  <div class="wrap" style="max-width:820px;">
+    {gallery_html}
+    <p style="white-space: pre-wrap; font-size:1.05rem; margin-top:24px;">{body_text}</p>
+    <div style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
+      {cta_html}
+      <a href="/news.html" class="btn btn-outline">Back to News</a>
+    </div>
+  </div>
+</section>
+'''
+    with open(f"output/news/{item['slug']}.html", "w") as f:
+        f.write(page(title, body_text[:150], "news.html", event_body))
+
+
 
 # ---------------- CONTACT ----------------
 contact_body = '''
@@ -720,7 +748,7 @@ thankyou_body = '''
 </section>
 <section class="text-center">
   <div class="wrap">
-    <a href="index.html" class="btn btn-primary">Back to Home</a>
+    <a href="/index.html" class="btn btn-primary">Back to Home</a>
   </div>
 </section>
 '''
