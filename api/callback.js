@@ -34,6 +34,34 @@ export default async function handler(req, res) {
       return;
     }
 
+    // Verify this specific user actually has write access to the repo
+    // before ever handing control to the CMS. Public repo visibility does
+    // not imply write access, but without this check anyone with a GitHub
+    // account could reach the editor UI (even though they couldn't
+    // ultimately save anything, since GitHub itself blocks that server-side).
+    const repoRes = await fetch(
+      "https://api.github.com/repos/thecotilking/dominion-group-of-schools",
+      {
+        headers: {
+          Authorization: `token ${tokenData.access_token}`,
+          Accept: "application/vnd.github+json",
+        },
+      }
+    );
+    const repoData = await repoRes.json();
+    const canWrite = !!(repoData.permissions && (repoData.permissions.push || repoData.permissions.admin));
+
+    if (!canWrite) {
+      res.status(403).setHeader("Content-Type", "text/html");
+      res.send(`<!DOCTYPE html>
+<html><body style="font-family: sans-serif; padding: 48px; text-align:center;">
+<h2>Access Denied</h2>
+<p>You're signed in to GitHub, but this account doesn't have permission to edit the Dominion Group of Schools website.</p>
+<p>If you believe this is a mistake, contact the site administrator to be added as a collaborator on the repository.</p>
+</body></html>`);
+      return;
+    }
+
     const payload = JSON.stringify({ token: tokenData.access_token, provider: "github" });
     const message = "authorization:github:success:" + payload;
 
