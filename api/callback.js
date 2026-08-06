@@ -46,7 +46,7 @@ export default async function handler(req, res) {
   var message = ${JSON.stringify(message)};
 
   if (!window.opener) {
-    statusEl.textContent = "No opener window found. This tab was likely opened without a proper popup link (or a popup blocker interfered). Please close this tab, disable any popup blocker for this site, and click 'Login with GitHub' again.";
+    statusEl.textContent = "No opener window found. Please close this tab and try logging in again.";
     return;
   }
 
@@ -68,8 +68,6 @@ export default async function handler(req, res) {
   window.addEventListener("message", receiveMessage, false);
   window.opener.postMessage("authorizing:github", "*");
 
-  // Fallback: if opener never replies within 2s, send directly to any origin
-  // so the CMS can still pick it up even if the handshake ping is missed.
   setTimeout(function() {
     send("*");
     statusEl.textContent = "Authenticated. If this tab does not close automatically, you can close it and return to the CMS tab.";

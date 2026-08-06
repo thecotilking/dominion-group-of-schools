@@ -2,7 +2,7 @@ backend:
   name: github
   repo: thecotilking/dominion-group-of-schools
   branch: main
-  base_url: https://www.dominiongroupofschools.com
+  base_url: https://dominiongroupofschools.com
   auth_endpoint: api/auth
 
 media_folder: "assets/photos/news-uploads"
@@ -20,9 +20,5 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
-      - label: "Photos"
-        name: "images"
-        widget: "list"
-        required: false
-        field: { label: "Photo", name: "image", widget: "image" }
+      - { label: "Photo", name: "image", widget: "image", required: false }
       - { label: "Summary", name: "body", widget: "text" }

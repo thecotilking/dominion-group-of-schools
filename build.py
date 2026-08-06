@@ -162,6 +162,10 @@ def page(title, description, active, body, extra_class=""):
 </script>
 {FONTS}
 <link rel="stylesheet" href="assets/styles.css">
+<script>
+window.va = window.va || function () {{ (window.vaq = window.vaq || []).push(arguments); }};
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="{extra_class}">
 <div class="site-notice">🎓 We're Hiring! Physics, English, Chemistry &amp; Biology teachers wanted.<a href="news.html#hiring">View Details</a></div>
