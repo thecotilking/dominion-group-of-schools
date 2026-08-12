@@ -130,7 +130,7 @@ def footer():
   </div>
 </footer>'''
 
-def page(title, description, active, body, extra_class=""):
+def page(title, description, active, body, extra_class="bg-aurora"):
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,7 +165,7 @@ def page(title, description, active, body, extra_class=""):
 <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body class="{extra_class}">
-<div class="site-notice">🎓 We're Hiring! Physics, English, Chemistry &amp; Biology teachers wanted.<a href="/news.html#hiring">View Details</a></div>
+<div class="site-notice"><div class="marquee-track"><span class="marquee-item">🎓 Admissions for 2026 are now open!<a href="/admissions.html">Apply or Enquire</a></span><span class="marquee-item">🎓 Admissions for 2026 are now open!<a href="/admissions.html">Apply or Enquire</a></span></div></div>
 {header(active)}
 {body}
 {footer()}
@@ -175,12 +175,21 @@ def page(title, description, active, body, extra_class=""):
 </div>
 <script>
 (function() {{
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function startArcSun() {{
+    if (reducedMotion) return;
+    var motion = document.getElementById('arcSunMotion');
+    if (motion && motion.beginElement) {{
+      try {{ motion.beginElement(); }} catch (e) {{}}
+    }}
+  }}
   var arc = document.querySelector('.arc-wrap');
   if (arc && 'IntersectionObserver' in window) {{
     var io = new IntersectionObserver(function(entries) {{
       entries.forEach(function(entry) {{
         if (entry.isIntersecting) {{
           arc.classList.add('in-view');
+          startArcSun();
           io.disconnect();
         }}
       }});
@@ -188,6 +197,22 @@ def page(title, description, active, body, extra_class=""):
     io.observe(arc);
   }} else if (arc) {{
     arc.classList.add('in-view');
+    startArcSun();
+  }}
+
+  var revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length && 'IntersectionObserver' in window) {{
+    var rio = new IntersectionObserver(function(entries) {{
+      entries.forEach(function(entry) {{
+        if (entry.isIntersecting) {{
+          entry.target.classList.add('in-view');
+          rio.unobserve(entry.target);
+        }}
+      }});
+    }}, {{ threshold: 0.15 }});
+    revealEls.forEach(function(el) {{ rio.observe(el); }});
+  }} else {{
+    revealEls.forEach(function(el) {{ el.classList.add('in-view'); }});
   }}
   document.querySelectorAll('.main-nav a').forEach(function(link) {{
     link.addEventListener('click', function() {{
@@ -289,7 +314,7 @@ def build_spotlight_section(compact=False):
       <button class="spotlight-arrow spotlight-arrow-left" onclick="shiftSpotlight(-1)" aria-label="Previous">&#8592;</button>
       <button class="spotlight-arrow spotlight-arrow-right" onclick="shiftSpotlight(1)" aria-label="Next">&#8594;</button>'''
 
-    wrap_class = "spotlight-banner-wrap spotlight-compact" if compact else "spotlight-banner-wrap"
+    wrap_class = "spotlight-banner-wrap spotlight-compact reveal" if compact else "spotlight-banner-wrap reveal"
     eyebrow = "Latest Highlight" if compact else "Spotlight"
 
     return f'''
@@ -319,16 +344,36 @@ home_body = f'''
         <a href="/admissions.html" class="btn btn-primary">Start Admissions</a>
         <a href="/about.html" class="btn btn-outline">Our Story</a>
       </div>
+      <div class="pill-row">
+        <span class="pill-label">Explore:</span>
+        <a href="#nursery" class="pill-link">Nursery</a>
+        <a href="#primary" class="pill-link">Primary</a>
+        <a href="#secondary" class="pill-link">Secondary</a>
+      </div>
     </div>
     <div class="arc-wrap">
       <svg viewBox="0 0 400 220" width="100%" style="overflow:visible;">
-        <path class="arc-path" d="M20 190 C 90 60, 310 60, 380 190" stroke="#6E1E2E" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <defs>
+          <filter id="arcGlow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="6" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <path id="arcPath" class="arc-path" d="M20 190 C 90 60, 310 60, 380 190" stroke="#6E1E2E" stroke-width="3" fill="none" stroke-linecap="round"/>
         <a href="#nursery"><circle class="arc-dot" cx="20" cy="190" r="9" fill="#8A6C4E"/></a>
         <a href="#primary"><circle class="arc-dot" cx="200" cy="72" r="9" fill="#D9A73B"/></a>
         <a href="#secondary"><circle class="arc-dot" cx="380" cy="190" r="9" fill="#6E1E2E"/></a>
+        <circle class="arc-sun" r="6" fill="#D9A73B" filter="url(#arcGlow)">
+          <animateMotion id="arcSunMotion" dur="6s" begin="indefinite" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
+            <mpath href="#arcPath"/>
+          </animateMotion>
+        </circle>
       </svg>
       <div class="arc-caption">
-        <a href="#nursery">Nursery<small>Ages 1&ndash;5</small></a>
+        <a href="#nursery">Nursery<small>Ages 2&ndash;5</small></a>
         <a href="#primary">Primary<small>Ages 6&ndash;11</small></a>
         <a href="#secondary">Secondary<small>Ages 12&ndash;17</small></a>
       </div>
@@ -336,23 +381,35 @@ home_body = f'''
   </div>
 </section>
 {home_spotlight_section}
+<section class="overview">
+  <div class="wrap overview-split">
+    <div class="overview-label">
+      <strong>Overview</strong>
+      Our Promise
+    </div>
+    <div>
+      <p class="overview-statement">Dominion is built to carry a child from their very first day of nursery to their final secondary exam &mdash; <span class="accent">one campus, one community, one standard, all the way through.</span></p>
+      <a href="/about.html" class="overview-link">Read our story &rarr;</a>
+    </div>
+  </div>
+</section>
 <section class="stages">
   <div class="wrap">
     <span class="eyebrow" style="color:var(--gold);">The Dominion Journey</span>
     <h2>Three stages. One continuous path.</h2>
     <p class="section-intro">We built Dominion around a simple idea: a child shouldn't have to change schools, cultures or standards just to grow up. Each stage hands off to the next with the same values intact.</p>
     <div class="stage-list">
-      <div class="stage-card" id="nursery">
+      <div class="stage-card reveal" id="nursery" style="transition-delay:0s;">
         <span class="stage-num">01</span>
         <h3>Nursery</h3>
         <p>Play-driven early learning that builds curiosity, language and confidence before formal schooling begins.</p>
       </div>
-      <div class="stage-card" id="primary">
+      <div class="stage-card reveal" id="primary" style="transition-delay:0.1s;">
         <span class="stage-num">02</span>
         <h3>Primary</h3>
         <p>A structured, well-rounded curriculum in literacy, numeracy, science and character, taught by dedicated form teachers.</p>
       </div>
-      <div class="stage-card" id="secondary">
+      <div class="stage-card reveal" id="secondary" style="transition-delay:0.2s;">
         <span class="stage-num">03</span>
         <h3>Secondary</h3>
         <p>Rigorous preparation for WAEC/NECO and beyond, with sciences, arts, commercial subjects and strong pastoral care.</p>
@@ -360,25 +417,34 @@ home_body = f'''
     </div>
   </div>
 </section>
+<div class="motto-band">
+  <p>
+    <span>Knowledge</span>
+    <span class="motto-divider" aria-hidden="true"></span>
+    <span>Wisdom</span>
+    <span class="motto-divider" aria-hidden="true"></span>
+    <span>Fear of God</span>
+  </p>
+</div>
 
 <section>
   <div class="wrap">
     <span class="eyebrow">Why Families Choose Us</span>
     <h2>A school built around the whole child</h2>
     <div class="card-grid">
-      <div class="card">
+      <div class="card reveal" style="transition-delay:0s;">
         <h3>Small Class Sizes</h3>
         <p>Every child is known by name, with teachers who track progress closely at every stage.</p>
       </div>
-      <div class="card">
+      <div class="card reveal" style="transition-delay:0.1s;">
         <h3>Qualified, Caring Staff</h3>
         <p>Experienced educators who bring warmth and high expectations into every classroom.</p>
       </div>
-      <div class="card">
+      <div class="card reveal" style="transition-delay:0.2s;">
         <h3>Safe, Modern Campus</h3>
         <p>A secure, well-maintained environment designed for learning, play and growth.</p>
       </div>
-      <div class="card">
+      <div class="card reveal" style="transition-delay:0.3s;">
         <h3>Consistent Values</h3>
         <p>The same standards of discipline, faith and character from nursery right through to graduation.</p>
       </div>
@@ -391,19 +457,19 @@ home_body = f'''
     <span class="eyebrow">Life at Dominion</span>
     <h2>A campus built for learning and growth</h2>
     <div class="card-grid">
-      <div class="card" style="padding:0; overflow:hidden;">
+      <div class="card reveal" style="padding:0; overflow:hidden; transition-delay:0s;">
         <img src="/assets/photos/campus-exterior-1.jpg" alt="Dominion Group of Schools campus building" style="border-radius:14px 14px 0 0;">
         <div style="padding:18px;"><h3>Our Campus</h3><p>Dominion College and Dominion Nursery/Primary School share one secure campus.</p></div>
       </div>
-      <div class="card" style="padding:0; overflow:hidden;">
+      <div class="card reveal" style="padding:0; overflow:hidden; transition-delay:0.1s;">
         <img src="/assets/photos/science-lab-1.jpg" alt="Student in the science laboratory" style="border-radius:14px 14px 0 0;">
         <div style="padding:18px;"><h3>Science Laboratory</h3><p>Hands-on practicals give secondary students real lab experience ahead of WAEC/NECO.</p></div>
       </div>
-      <div class="card" style="padding:0; overflow:hidden;">
+      <div class="card reveal" style="padding:0; overflow:hidden; transition-delay:0.2s;">
         <img src="/assets/photos/classroom-students.jpg" alt="Students in class and walking on campus" style="border-radius:14px 14px 0 0;">
         <div style="padding:18px;"><h3>Everyday Learning</h3><p>Attentive teachers and focused classrooms, day to day.</p></div>
       </div>
-      <div class="card" style="padding:0; overflow:hidden;">
+      <div class="card reveal" style="padding:0; overflow:hidden; transition-delay:0.3s;">
         <img src="/assets/photos/graduation.jpg" alt="Dominion primary school graduation ceremony" style="border-radius:14px 14px 0 0;">
         <div style="padding:18px;"><h3>Milestones</h3><p>Celebrating our pupils at every graduation and achievement.</p></div>
       </div>
@@ -664,25 +730,7 @@ news_body = f'''
 <section>
   <div class="wrap">
     <div class="card-grid">
-      <div class="card" id="hiring" style="border: 2px solid var(--gold); grid-column: 1 / -1;">
-        <h3>We're Hiring!</h3>
-        <p>Dominion College, Asaba is inviting applications from qualified, passionate and dedicated teachers to join our academic team.</p>
-        <p><strong>Vacancies Available:</strong></p>
-        <ul style="color:var(--ink-soft); margin:0 0 16px; padding-left:20px;">
-          <li>Physics Teacher</li>
-          <li>English Language Teacher</li>
-          <li>Chemistry Teacher</li>
-          <li>Biology Teacher</li>
-        </ul>
-        <p><strong>What We Offer:</strong></p>
-        <ul style="color:var(--ink-soft); margin:0 0 16px; padding-left:20px;">
-          <li>Attractive and competitive salary</li>
-          <li>Comfortable staff accommodation</li>
-          <li>Friendly and conducive working environment</li>
-          <li>Opportunity for career growth and professional development</li>
-        </ul>
-        <p style="margin-bottom:0;"><strong>For enquiries, contact or WhatsApp:</strong> <a href="tel:+2347050358052" style="color:var(--indigo); font-weight:600;">0705 035 8052</a></p>
-      </div>{news_cards}
+      {news_cards}
     </div>
   </div>
 </section>
