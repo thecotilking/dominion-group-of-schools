@@ -2,7 +2,12 @@ backend:
   name: github
   repo: thecotilking/dominion-group-of-schools
   branch: main
-  base_url: https://dominiongroupofschools.com
+  # Must keep the www. The bare host 308s to www, so the OAuth popup ends
+  # up on www while Decap still validates the postMessage origin against
+  # this value — they stop matching, the message is discarded and login
+  # hangs with no error. Fixed once in 17bafa9 and reverted by accident in
+  # 9e18888; please don't drop the www again.
+  base_url: https://www.dominiongroupofschools.com
   auth_endpoint: api/auth
 
 media_folder: "assets/photos/news-uploads"
