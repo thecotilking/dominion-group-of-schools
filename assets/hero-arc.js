@@ -24,7 +24,7 @@
 (function () {
   "use strict";
 
-  if (!window.THREE) return;
+  var THREE_SRC = "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js";
 
   var wrap = document.querySelector(".arc-wrap");
   if (!wrap) return;
@@ -38,10 +38,8 @@
   if ((nav.deviceMemory || 8) < 4) return;
   if ((nav.hardwareConcurrency || 8) < 4) return;
 
-  /* Width is the one condition that changes after load. Checking it once meant
-     a window opened narrow and then maximised never got the arc at all. */
-  function wideEnough() {
-    return !(mq && mq("(max-width: 860px)").matches);
+  function isSmall() {
+    return !!(mq && mq("(max-width: 860px)").matches);
   }
 
   function build() {
@@ -54,7 +52,17 @@
       paper:    0xFBF3E7
     };
 
-    var ASPECT = 2.0;
+    var small = isSmall();
+
+    /* Phones get a taller frame — the hero column is ~330px wide there, and a
+       2:1 canvas shrinks the pieces past recognising. */
+    var ASPECT = small ? 1.5 : 2.0;
+
+    /* And a lighter build. These are the counts that cost real milliseconds on
+       a mid-range Android, not the ones that show. */
+    var Q = small
+      ? { dpr: 1.5, tube: 140, radial: 10, ball: [16, 12], box: [32, 24], cord: 24 }
+      : { dpr: 1.75, tube: 320, radial: 16, ball: [20, 14], box: [64, 48], cord: 40 };
 
     /* ---------- the curve ----------------------------------------------- */
 
@@ -105,7 +113,7 @@
       return;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, Q.dpr));
     renderer.outputColorSpace = T.SRGBColorSpace;
 
     var scene = new T.Scene();
@@ -144,13 +152,13 @@
     /* ---------- the arc itself ------------------------------------------- */
 
     stage.add(new T.Mesh(
-      new T.TubeGeometry(curve, 320, 0.023, 16, false),
+      new T.TubeGeometry(curve, Q.tube, 0.023, Q.radial, false),
       mat(COL.indigo, 0.52, 0.10)
     ));
 
     /* Round ends, matching the SVG's stroke-linecap="round". */
     [0, 1].forEach(function (t) {
-      var cap = new T.Mesh(new T.SphereGeometry(0.023, 20, 14), mat(COL.indigo, 0.52, 0.10));
+      var cap = new T.Mesh(new T.SphereGeometry(0.023, Q.ball[0], Q.ball[1]), mat(COL.indigo, 0.52, 0.10));
       cap.position.copy(curve.getPointAt(t));
       stage.add(cap);
     });
@@ -161,7 +169,7 @@
        core library has no RoundedBoxGeometry, and a hard-edged cube is the one
        shape here that reads as "computer graphics" rather than "toy". */
     function roundedBox(size, roundness, material) {
-      var geo = new T.SphereGeometry(1, 64, 48);
+      var geo = new T.SphereGeometry(1, Q.box[0], Q.box[1]);
       var pos = geo.attributes.position;
       var v = new T.Vector3();
       for (var i = 0; i < pos.count; i++) {
@@ -271,7 +279,7 @@
       board.rotation.y = Math.PI / 4;
       g.add(board);
 
-      var button = new T.Mesh(new T.SphereGeometry(0.030, 20, 14), mat(COL.gold, 0.34, 0.62));
+      var button = new T.Mesh(new T.SphereGeometry(0.030, Q.ball[0], Q.ball[1]), mat(COL.gold, 0.34, 0.62));
       button.position.y = 0.048;
       g.add(button);
 
@@ -283,7 +291,7 @@
         new T.Vector3(0.24, 0.035, 0.24),
         new T.Vector3(0.30, -0.26, 0.30)
       );
-      g.add(new T.Mesh(new T.TubeGeometry(cordCurve, 40, 0.008, 8, false), cordMat));
+      g.add(new T.Mesh(new T.TubeGeometry(cordCurve, Q.cord, 0.008, 8, false), cordMat));
 
       var bundle = new T.Mesh(new T.CylinderGeometry(0.026, 0.042, 0.15, 14), cordMat);
       bundle.position.set(0.30, -0.335, 0.30);
@@ -329,11 +337,11 @@
     /* ---------- the travelling sun --------------------------------------- */
 
     var sun = new T.Mesh(
-      new T.SphereGeometry(0.048, 24, 16),
+      new T.SphereGeometry(0.048, Q.ball[0] + 4, Q.ball[1] + 2),
       new T.MeshBasicMaterial({ color: COL.gold })
     );
     sun.add(new T.Mesh(
-      new T.SphereGeometry(0.115, 20, 14),
+      new T.SphereGeometry(0.115, Q.ball[0], Q.ball[1]),
       new T.MeshBasicMaterial({
         color: COL.goldSoft, transparent: true, opacity: 0.22, depthWrite: false
       })
@@ -457,14 +465,15 @@
     requestAnimationFrame(frame);
   }
 
-  if (wideEnough()) {
+  if (window.THREE) {
     build();
   } else {
-    var waitForWidth = function () {
-      if (!wideEnough()) return;
-      window.removeEventListener("resize", waitForWidth);
-      build();
-    };
-    window.addEventListener("resize", waitForWidth);
+    var tag = document.createElement("script");
+    tag.src = THREE_SRC;
+    tag.async = true;
+    tag.onload = function () { if (window.THREE) build(); };
+    /* On failure nothing happens, which is the correct outcome: the SVG arc is
+       already on the page and stays there. */
+    document.head.appendChild(tag);
   }
 })();

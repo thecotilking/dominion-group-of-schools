@@ -131,11 +131,11 @@ def footer():
   </div>
 </footer>'''
 
-# three.js is loaded on the homepage alone — it is the only page with the arc,
-# and ~170KB gzipped is not a fair price on every page for visitors on mobile
-# data. The site-wide background uses raw WebGL instead (assets/bg-gradient.js).
-HOME_SCRIPTS = """<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" defer></script>
-<script src="/assets/hero-arc.js" defer></script>"""
+# Only the homepage has the arc. hero-arc.js fetches three.js itself, and only
+# after its guards pass — a visitor who falls back to the SVG (reduced motion,
+# save-data, 2g, a weak device) never downloads the ~136KB library at all.
+# The site-wide background needs no library: it is raw WebGL in bg-gradient.js.
+HOME_SCRIPTS = """<script src="/assets/hero-arc.js" defer></script>"""
 
 
 def page(title, description, active, body, extra_class="bg-aurora", extra_scripts="", canonical=""):

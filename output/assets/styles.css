@@ -1021,10 +1021,3 @@ body.webgl-bg::before {
   display: none;
 }
 
-/* Narrowed after the 3D arc was built: hand the SVG back rather than squeeze
-   a wide canvas into a phone column. The script pauses rendering while this
-   is in force (it checks offsetParent). */
-@media (max-width: 860px) {
-  .arc-wrap.webgl-arc > svg { display: inline; }
-  .arc-wrap.webgl-arc > .arc-canvas { display: none; }
-}
