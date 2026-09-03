@@ -14,6 +14,7 @@
   --gold-soft: #F0CE86;
   --sage: #8A6C4E;
   --paper: #FBF3E7;
+  --paper-alt: #F2E6CF;
   --ink: #241512;
   --ink-soft: #6B564C;
   --line: rgba(110, 30, 46, 0.14);
@@ -75,17 +76,23 @@ img { max-width: 100%; display: block; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--paper);
-  border-bottom: 1px solid var(--line);
+  padding: 14px 20px 10px;
 }
 
 .nav-row {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
+  padding: 10px 12px 10px 20px;
   max-width: var(--max);
   margin: 0 auto;
+  border-radius: 999px;
+  background: rgba(251, 243, 231, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(36, 21, 18, 0.07);
 }
 
 .brand {
@@ -160,14 +167,16 @@ button:focus-visible {
 @media (max-width: 760px) {
   nav.main-nav {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 10px);
     left: 0;
     right: 0;
     background: var(--paper);
-    border-bottom: 1px solid var(--line);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(36, 21, 18, 0.1);
     flex-direction: column;
     align-items: flex-start;
-    padding: 12px 24px 20px;
+    padding: 16px 22px 20px;
     gap: 14px;
     display: none;
   }
@@ -212,8 +221,45 @@ button:focus-visible {
 
 .hero {
   position: relative;
-  padding: 64px 0 40px;
+  padding: 92px 0 56px;
   overflow: hidden;
+}
+
+/* ---------- Explore pill row (hero) ---------- */
+
+.pill-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.pill-row .pill-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-right: 2px;
+}
+
+.pill-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--indigo);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.pill-link:hover,
+.pill-link:focus-visible {
+  background: var(--gold-soft);
+  border-color: var(--gold);
 }
 
 .hero-grid {
@@ -308,7 +354,7 @@ button:focus-visible {
   transition: r 0.15s ease, filter 0.15s ease;
 }
 .arc-wrap.in-view .arc-dot {
-  animation: pop 0.4s ease forwards;
+  animation: pop 0.4s ease forwards, breathe 3.4s ease-in-out infinite;
 }
 .arc-dot:hover {
   filter: brightness(1.15) drop-shadow(0 0 6px rgba(217,167,59,0.6));
@@ -317,24 +363,40 @@ button:focus-visible {
   outline: 3px solid var(--gold);
   outline-offset: 3px;
 }
-.arc-wrap.in-view .arc-dot:nth-of-type(1) { animation-delay: 0.5s; }
-.arc-wrap.in-view .arc-dot:nth-of-type(2) { animation-delay: 1.0s; }
-.arc-wrap.in-view .arc-dot:nth-of-type(3) { animation-delay: 1.5s; }
+.arc-wrap.in-view .arc-dot:nth-of-type(1) { animation-delay: 0.5s, 2.4s; }
+.arc-wrap.in-view .arc-dot:nth-of-type(2) { animation-delay: 1.0s, 2.9s; }
+.arc-wrap.in-view .arc-dot:nth-of-type(3) { animation-delay: 1.5s, 3.4s; }
 
 @keyframes pop {
   from { opacity: 0; transform: scale(0.4); }
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.14); }
+}
+
+/* Traveling "sun" — continuous loop along the arc, ties into the
+   Arc of Growth motif (a sunrise arcing across each stage). */
+.arc-sun {
+  opacity: 0;
+  transform-origin: center;
+}
+.arc-wrap.in-view .arc-sun {
+  animation: pop 0.5s ease forwards 1.7s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .arc-path { stroke-dashoffset: 0; animation: none; }
   .arc-dot { opacity: 1; animation: none; }
+  .arc-sun { display: none; }
 }
 
 /* ---------- Stage cards (Nursery/Primary/Secondary) ---------- */
 
 .stages {
-  padding: 72px 0;
+  padding: 96px 0;
   background: var(--indigo);
   color: var(--paper);
 }
@@ -358,6 +420,13 @@ button:focus-visible {
   border: 1px solid rgba(250,246,239,0.14);
   border-radius: 16px;
   padding: 28px;
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+.stage-card:hover,
+.stage-card.in-view:hover {
+  transform: translateY(-6px);
+  background: rgba(250,246,239,0.1);
+  border-color: rgba(217,167,59,0.5);
 }
 
 .stage-num {
@@ -371,9 +440,102 @@ button:focus-visible {
 .stage-card h3 { color: var(--paper); margin-bottom: 8px; }
 .stage-card p { color: rgba(250,246,239,0.7); margin-bottom: 0; }
 
+/* ---------- Overview split (label + big statement) ---------- */
+
+.overview {
+  background: var(--paper-alt);
+}
+
+.overview-split {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .overview-split { grid-template-columns: 1fr; gap: 18px; }
+}
+
+.overview-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.overview-label strong {
+  display: block;
+  color: var(--indigo);
+  font-size: 0.85rem;
+  margin-bottom: 2px;
+}
+
+.overview-statement {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 2.6vw, 2.15rem);
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.45;
+  max-width: 42ch;
+}
+
+.overview-statement .accent { color: var(--gold); }
+
+.overview-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 22px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--indigo);
+  text-decoration: none;
+}
+
+.overview-link:hover,
+.overview-link:focus-visible { color: var(--gold); }
+
+/* ---------- Motto band (full-bleed statement) ---------- */
+
+.motto-band {
+  background: var(--gold);
+  padding: 56px 0;
+  text-align: center;
+}
+
+.motto-band p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 3.2vw, 2.1rem);
+  font-weight: 600;
+  color: var(--indigo-deep);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.motto-band .motto-divider {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--indigo-deep);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .motto-band p { gap: 12px; }
+}
+
 /* ---------- Generic sections ---------- */
 
-section { padding: 72px 0; }
+section { padding: 96px 0; }
 
 .section-intro { max-width: 60ch; }
 
@@ -382,6 +544,7 @@ section { padding: 72px 0; }
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 24px;
   margin-top: 36px;
+  align-items: start;
 }
 
 .card {
@@ -389,9 +552,24 @@ section { padding: 72px 0; }
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 26px;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card:hover,
+.card.in-view:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 34px rgba(36, 21, 18, 0.14);
+  border-color: var(--gold);
 }
 
 .card h3 { margin-bottom: 8px; }
+
+.card img {
+  transition: transform 0.5s ease;
+}
+.card:hover img {
+  transform: scale(1.06);
+}
 
 .placeholder-img {
   background: linear-gradient(135deg, var(--sage), var(--indigo));
@@ -420,15 +598,221 @@ section { padding: 72px 0; }
 .site-notice {
   background: var(--indigo);
   color: var(--paper);
-  text-align: center;
   font-size: 0.88rem;
-  padding: 10px 20px;
+  padding: 10px 0;
+  overflow: hidden;
 }
 .site-notice a {
   color: var(--gold-soft);
   font-weight: 600;
   text-decoration: underline;
   margin-left: 6px;
+}
+
+.marquee-track {
+  display: inline-flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: marquee 22s linear infinite;
+}
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  padding-right: 72px;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* ---------- News card excerpt + read more ---------- */
+
+.news-excerpt {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.read-more-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--indigo);
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: var(--body);
+}
+.read-more-btn:hover { color: var(--gold); }
+
+.news-card-trigger {
+  cursor: pointer;
+}
+
+/* ---------- Modal / lightbox ---------- */
+
+.modal-date {
+  color: var(--sage);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+/* ---------- Spotlight banner slider ---------- */
+
+.spotlight-date {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.spotlight-banner-wrap {
+  position: relative;
+}
+
+.spotlight-banner {
+  display: none;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--indigo);
+}
+.spotlight-banner.active { display: block; }
+
+.spotlight-banner img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  object-position: center;
+  background: var(--indigo-deep);
+  display: block;
+}
+
+.spotlight-banner-content {
+  padding: 24px 28px 28px;
+  color: var(--paper);
+}
+.spotlight-banner-content h2 { color: var(--paper); margin-bottom: 8px; }
+.spotlight-banner-content .news-excerpt {
+  color: rgba(251,243,231,0.82);
+  -webkit-line-clamp: 2;
+}
+.spotlight-banner-content .spotlight-date { color: var(--gold); }
+
+.spotlight-arrow {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(251,243,231,0.9);
+  color: var(--indigo);
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 5;
+}
+.spotlight-arrow:hover { background: var(--gold); }
+.spotlight-arrow-left { left: 14px; }
+.spotlight-arrow-right { right: 14px; }
+
+@media (max-width: 600px) {
+  .spotlight-arrow { display: none; }
+}
+
+.spotlight-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.spotlight-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: none;
+  background: var(--line);
+  cursor: pointer;
+  padding: 0;
+}
+.spotlight-dot.active { background: var(--indigo); }
+
+/* ---------- Individual event page gallery ---------- */
+
+.event-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.event-gallery img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 14px;
+}
+.event-gallery:has(img:only-child) img {
+  aspect-ratio: 16/9;
+}
+.event-gallery img { cursor: zoom-in; }
+
+/* ---------- Lightbox (full image view) ---------- */
+
+.lightbox-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 12, 10, 0.92);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  cursor: zoom-out;
+}
+.lightbox-overlay.open { display: flex; }
+.lightbox-overlay img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.modal-close {
+  background: var(--indigo);
+  color: var(--paper);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+  z-index: 301;
+}
+.modal-close:hover { background: var(--gold); color: var(--indigo-deep); }
+
+/* ---------- Compact spotlight (homepage variant) ---------- */
+
+.spotlight-compact .spotlight-banner img {
+  max-height: 220px;
+}
+.spotlight-compact .spotlight-banner-content {
+  padding: 16px 20px 20px;
+}
+.spotlight-compact .spotlight-banner-content h2 {
+  font-size: 1.3rem;
 }
 
 /* ---------- CTA band ---------- */
@@ -534,7 +918,113 @@ input:focus, textarea:focus, select:focus {
   border-color: var(--gold);
 }
 
+/* ---------- Scroll reveal (images/cards fade + rise into view) ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Background options (minimal, subtly animated) ---------- */
+/* Toggle by adding one of bg-aurora / bg-grid / bg-sunrise to <body>. */
+
+body[class*="bg-"] {
+  position: relative;
+}
+body[class*="bg-"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Option A — drifting aurora wash: soft indigo/gold blobs slowly drifting */
+body.bg-aurora::before {
+  background:
+    radial-gradient(50rem 40rem at 10% 5%, rgba(217,167,59,0.34), transparent 70%),
+    radial-gradient(46rem 42rem at 92% 22%, rgba(110,30,46,0.26), transparent 70%),
+    radial-gradient(42rem 38rem at 22% 90%, rgba(138,108,78,0.30), transparent 70%),
+    radial-gradient(40rem 40rem at 65% 58%, rgba(217,167,59,0.20), transparent 72%);
+  background-repeat: no-repeat;
+  animation: auroraDrift 22s ease-in-out infinite alternate;
+}
+@keyframes auroraDrift {
+  0%   { background-position: 0% 0%, 100% 0%, 0% 100%, 50% 50%; }
+  100% { background-position: 10% 8%, 88% 12%, 12% 82%, 58% 42%; }
+}
+
+/* Option B — floating dot grid: faint constellation drifting diagonally */
+body.bg-grid::before {
+  background-image: radial-gradient(rgba(110,30,46,0.16) 1.4px, transparent 1.4px);
+  background-size: 34px 34px;
+  animation: gridDrift 40s linear infinite;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 85%);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 85%);
+}
+@keyframes gridDrift {
+  from { background-position: 0 0; }
+  to   { background-position: 340px 340px; }
+}
+
+/* Option C — breathing sunrise glow: a warm glow that slowly pulses behind the hero */
+body.bg-sunrise::before {
+  background: radial-gradient(44rem 30rem at 50% -8%, rgba(217,167,59,0.22), transparent 65%);
+  animation: sunriseBreathe 9s ease-in-out infinite;
+}
+@keyframes sunriseBreathe {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[class*="bg-"]::before { animation: none; }
+}
+
 /* ---------- Utility ---------- */
 
 .mt-0 { margin-top: 0; }
 .text-center { text-align: center; }
+
+/* ---------- WebGL layers ---------- */
+/* Both of these are progressive enhancements. If the scripts bail — reduced
+   motion, save-data, a weak device, no WebGL — nothing below applies and the
+   CSS aurora and the SVG arc carry on as they always have. */
+
+.bg-webgl {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Must stay after body.bg-aurora::before — same specificity, so the later
+   rule is what wins. */
+body.webgl-bg::before {
+  opacity: 0;
+}
+
+.arc-canvas {
+  display: block;
+  width: 100%;
+}
+
+.arc-wrap.webgl-arc > svg {
+  display: none;
+}
+
+/* Narrowed after the 3D arc was built: hand the SVG back rather than squeeze
+   a wide canvas into a phone column. The script pauses rendering while this
+   is in force (it checks offsetParent). */
+@media (max-width: 860px) {
+  .arc-wrap.webgl-arc > svg { display: inline; }
+  .arc-wrap.webgl-arc > .arc-canvas { display: none; }
+}

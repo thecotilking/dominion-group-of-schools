@@ -28,25 +28,28 @@
   "sameAs": []
 }
 </script>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/crest-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/icons/crest-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/crest-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/crest-180.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#6E1E2E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css">
-<script>
-window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<link rel="stylesheet" href="/assets/styles.css">
 </head>
-<body class="">
-<div class="site-notice">🎓 We're Hiring! Physics, English, Chemistry &amp; Biology teachers wanted.<a href="news.html#hiring">View Details</a></div>
+<body class="bg-aurora">
+<div class="site-notice"><div class="marquee-track"><span class="marquee-item">🎓 Admissions for 2026 are now open!<a href="/admissions.html">Apply or Enquire</a></span><span class="marquee-item">🎓 Admissions for 2026 are now open!<a href="/admissions.html">Apply or Enquire</a></span></div></div>
 <header class="site-header">
   <div class="nav-row">
-    <a href="index.html" class="brand">
-      <img src="assets/photos/logo.jpg" alt="Dominion Group of Schools crest" class="brand-mark" style="border-radius:50%; object-fit:cover;">
+    <a href="/index.html" class="brand">
+      <img src="/assets/photos/logo.jpg" alt="Dominion Group of Schools crest" class="brand-mark" style="border-radius:50%; object-fit:cover;">
       <span class="brand-name">Dominion Group<small>of Schools</small></span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" onclick="document.querySelector('.main-nav').classList.toggle('open')">☰</button>
     <nav class="main-nav">
-      <a href="index.html">Home</a><a href="about.html">About</a><a href="academics.html">Academics</a><a href="admissions.html">Admissions</a><a href="news.html" aria-current="page">News</a><a href="contact.html">Contact</a>
-      <a href="admissions.html" class="btn btn-gold" style="padding:10px 20px;">Apply Now</a>
+      <a href="/index.html">Home</a><a href="/about.html">About</a><a href="/academics.html">Academics</a><a href="/admissions.html">Admissions</a><a href="/news.html" aria-current="page">News</a><a href="/contact.html">Contact</a>
+      <a href="/admissions.html" class="btn btn-gold" style="padding:10px 20px;">Apply Now</a>
     </nav>
   </div>
 </header>
@@ -57,41 +60,99 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     <p>What's happening across the Dominion community.</p>
   </div>
 </section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <span class="eyebrow">Spotlight</span>
+    <div class="spotlight-banner-wrap reveal">
+      
+    <a href="/news/admissions-2026.html" class="spotlight-banner active" data-index="0">
+      <img src="/assets/photos/campus-exterior-1.jpg" alt="Admissions for 2026 Are Now Open">
+      <div class="spotlight-banner-content">
+        <span class="spotlight-date">2026-08-12</span>
+        <h2>Admissions for 2026 Are Now Open</h2>
+        <p class="news-excerpt">Dominion Group of Schools is now accepting applications for the 2026 academic session across Nursery, Primary and Secondary. Give your child a place where every stage of growth is carried with the same care, from their very first day of nursery to their final secondary exam.
+
+Places are limited and offered on a first-come, first-served basis, so early applications are encouraged.
+
+For registration, enquiries or a campus tour, reach out to us:
+
+Call or WhatsApp: 0705 574 2394
+Email: dominiongroupofschools777@gmail.com
+Visit: 1 Dominion School Road, off Hospital Road, Ugboma Layout, Asaba, Delta State</p>
+        <span class="btn btn-primary" style="margin-top:12px;">Read Full Story</span>
+      </div>
+    </a>
+    <a href="/news/waec-results-2026.html" class="spotlight-banner" data-index="1">
+      <img src="/assets/photos/news-uploads/img_3759.jpeg" alt="Our First Set Shines in WASSCE!">
+      <div class="spotlight-banner-content">
+        <span class="spotlight-date">2026-08-06</span>
+        <h2>Our First Set Shines in WASSCE!</h2>
+        <p class="news-excerpt">Dominion College, Asaba celebrated a proud milestone this year: our very first graduating set sat WASSCE and delivered outstanding results, with multiple straight A1 distinctions across Marketing, Economics, Government, Christian Religious Studies and more. Congratulations to Egwuchukwu Divine Favour, Obaze Udoka Johnbosco, Okpako Runor Joshua and Okwudibonye Nkechi Juliana for leading the way as Dominion's first set of WASSCE candidates.
+
+This is the same standard of excellence and Christian character every Dominion student is raised on, from Nursery through Secondary. Ready to give your child the same strong foundation?</p>
+        <span class="btn btn-primary" style="margin-top:12px;">Read Full Story</span>
+      </div>
+    </a>
+      
+      <button class="spotlight-arrow spotlight-arrow-left" onclick="shiftSpotlight(-1)" aria-label="Previous">&#8592;</button>
+      <button class="spotlight-arrow spotlight-arrow-right" onclick="shiftSpotlight(1)" aria-label="Next">&#8594;</button>
+    </div>
+    <div class="spotlight-dots"><button class="spotlight-dot active" onclick="goToSpotlight(0)" aria-label="Go to slide 1"></button><button class="spotlight-dot" onclick="goToSpotlight(1)" aria-label="Go to slide 2"></button></div>
+  </div>
+</section>
 <section>
   <div class="wrap">
     <div class="card-grid">
-      <div class="card" id="hiring" style="border: 2px solid var(--gold); grid-column: 1 / -1;">
-        <h3>We're Hiring!</h3>
-        <p>Dominion College, Asaba is inviting applications from qualified, passionate and dedicated teachers to join our academic team.</p>
-        <p><strong>Vacancies Available:</strong></p>
-        <ul style="color:var(--ink-soft); margin:0 0 16px; padding-left:20px;">
-          <li>Physics Teacher</li>
-          <li>English Language Teacher</li>
-          <li>Chemistry Teacher</li>
-          <li>Biology Teacher</li>
-        </ul>
-        <p><strong>What We Offer:</strong></p>
-        <ul style="color:var(--ink-soft); margin:0 0 16px; padding-left:20px;">
-          <li>Attractive and competitive salary</li>
-          <li>Comfortable staff accommodation</li>
-          <li>Friendly and conducive working environment</li>
-          <li>Opportunity for career growth and professional development</li>
-        </ul>
-        <p style="margin-bottom:0;"><strong>For enquiries, contact or WhatsApp:</strong> <a href="tel:+2347050358052" style="color:var(--indigo); font-weight:600;">0705 035 8052</a></p>
-      </div>
-      <div class="card" style="padding:0; overflow:hidden;">
-        <img src="assets/photos/graduation.jpg" alt="Primary School Graduation" style="border-radius:14px 14px 0 0;">
-        <div style="padding:18px;"><h3>Primary School Graduation</h3><p>Celebrating our graduating pupils as they move up to secondary school.</p></div>
-      </div>
-      <div class="card" style="padding:0; overflow:hidden;">
-        <img src="assets/photos/bus-school.jpg" alt="Safe School Transport" style="border-radius:14px 14px 0 0;">
-        <div style="padding:18px;"><h3>Safe School Transport</h3><p>Our school bus keeps pick-up and drop-off safe and convenient for Dominion families.</p></div>
-      </div>
-      <div class="card">
+      
+      <a href="/news/admissions-2026.html" class="card news-card-trigger" style="padding:0; overflow:hidden; display:block; text-decoration:none;">
+        <img src="/assets/photos/campus-exterior-1.jpg" alt="Admissions for 2026 Are Now Open" style="border-radius:14px 14px 0 0;">
+        <div style="padding:18px;"><h3>Admissions for 2026 Are Now Open</h3><p class="news-excerpt">Dominion Group of Schools is now accepting applications for the 2026 academic session across Nursery, Primary and Secondary. Give your child a place where every stage of growth is carried with the same care, from their very first day of nursery to their final secondary exam.
+
+Places are limited and offered on a first-come, first-served basis, so early applications are encouraged.
+
+For registration, enquiries or a campus tour, reach out to us:
+
+Call or WhatsApp: 0705 574 2394
+Email: dominiongroupofschools777@gmail.com
+Visit: 1 Dominion School Road, off Hospital Road, Ugboma Layout, Asaba, Delta State</p><span class="read-more-btn">Read More</span></div>
+      </a>
+      <a href="/news/cultural-day-2024.html" class="card news-card-trigger" style="padding:0; overflow:hidden; display:block; text-decoration:none;">
+        <img src="/assets/photos/news-uploads/img_3736.jpeg" alt="Cultural day 2024" style="border-radius:14px 14px 0 0;">
+        <div style="padding:18px;"><h3>Cultural day 2024</h3><p class="news-excerpt">Cultural Day at Dominion Group of Schools
+
+Dominion Group of Schools comes alive with color, music, and tradition as we celebrate Cultural Day! This vibrant annual event brings our students together to showcase the rich diversity of Nigeria’s cultures through traditional attire, dance, music, and cuisine. Pupils will parade in colorful outfits representing various ethnic groups, perform cultural dances and songs, and take part in exhibitions highlighting our nation’s heritage.
+
+Cultural Day is more than a celebration — it’s a hands-on lesson in unity, identity, and respect for the diverse tapestry that makes up our community. Parents and guardians are warmly invited to join us for a day filled with pride, learning, and fun.
+
+Come celebrate with us as we honor where we come from and the values that bind us together!</p><span class="read-more-btn">Read More</span></div>
+      </a>
+      <a href="/news/waec-results-2026.html" class="card news-card-trigger" style="padding:0; overflow:hidden; display:block; text-decoration:none;">
+        <img src="/assets/photos/news-uploads/img_3759.jpeg" alt="Our First Set Shines in WASSCE!" style="border-radius:14px 14px 0 0;">
+        <div style="padding:18px;"><h3>Our First Set Shines in WASSCE!</h3><p class="news-excerpt">Dominion College, Asaba celebrated a proud milestone this year: our very first graduating set sat WASSCE and delivered outstanding results, with multiple straight A1 distinctions across Marketing, Economics, Government, Christian Religious Studies and more. Congratulations to Egwuchukwu Divine Favour, Obaze Udoka Johnbosco, Okpako Runor Joshua and Okwudibonye Nkechi Juliana for leading the way as Dominion's first set of WASSCE candidates.
+
+This is the same standard of excellence and Christian character every Dominion student is raised on, from Nursery through Secondary. Ready to give your child the same strong foundation?</p><span class="read-more-btn">Read More</span></div>
+      </a>
+      <a href="/news/hiring-teachers.html" class="card news-card-trigger" style="display:block; text-decoration:none;">
         <div class="placeholder-img">Event photo</div>
-        <h3 style="margin-top:14px;">WAEC/NECO Results</h3>
-        <p>Congratulating our graduating class on their results. Replace this with the real post.</p>
-      </div>
+        <h3 style="margin-top:14px;">We're Hiring!</h3>
+        <p class="news-excerpt">Dominion College, Asaba is inviting applications from qualified, passionate and dedicated teachers to join our academic team.
+
+Vacancies available: Physics Teacher, English Language Teacher, Chemistry Teacher, Biology Teacher.
+
+What we offer: an attractive and competitive salary, comfortable staff accommodation, a friendly and conducive working environment, and real opportunities for career growth and professional development.
+
+For enquiries, contact or WhatsApp: 0705 035 8052.</p>
+        <span class="read-more-btn">Read More</span>
+      </a>
+      <a href="/news/primary-school-graduation.html" class="card news-card-trigger" style="padding:0; overflow:hidden; display:block; text-decoration:none;">
+        <img src="/assets/photos/graduation.jpg" alt="Primary School Graduation" style="border-radius:14px 14px 0 0;">
+        <div style="padding:18px;"><h3>Primary School Graduation</h3><p class="news-excerpt">Celebrating our graduating pupils as they move up to secondary school.</p><span class="read-more-btn">Read More</span></div>
+      </a>
+      <a href="/news/safe-school-transport.html" class="card news-card-trigger" style="padding:0; overflow:hidden; display:block; text-decoration:none;">
+        <img src="/assets/photos/bus-school.jpg" alt="Safe School Transport" style="border-radius:14px 14px 0 0;">
+        <div style="padding:18px;"><h3>Safe School Transport</h3><p class="news-excerpt">Our school bus keeps pick-up and drop-off safe and convenient for Dominion families.</p><span class="read-more-btn">Read More</span></div>
+      </a>
     </div>
   </div>
 </section>
@@ -106,10 +167,10 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <div>
         <h4>Explore</h4>
         <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="academics.html">Academics</a></li>
-          <li><a href="admissions.html">Admissions</a></li>
-          <li><a href="news.html">News &amp; Events</a></li>
+          <li><a href="/about.html">About Us</a></li>
+          <li><a href="/academics.html">Academics</a></li>
+          <li><a href="/admissions.html">Admissions</a></li>
+          <li><a href="/news.html">News &amp; Events</a></li>
         </ul>
       </div>
       <div>
@@ -127,14 +188,27 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     </div>
   </div>
 </footer>
+<div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox()">
+  <button class="modal-close" onclick="closeLightbox()" aria-label="Close" style="position:fixed; top:20px; right:20px;">&times;</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
 <script>
 (function() {
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function startArcSun() {
+    if (reducedMotion) return;
+    var motion = document.getElementById('arcSunMotion');
+    if (motion && motion.beginElement) {
+      try { motion.beginElement(); } catch (e) {}
+    }
+  }
   var arc = document.querySelector('.arc-wrap');
   if (arc && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           arc.classList.add('in-view');
+          startArcSun();
           io.disconnect();
         }
       });
@@ -142,13 +216,68 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     io.observe(arc);
   } else if (arc) {
     arc.classList.add('in-view');
+    startArcSun();
+  }
+
+  var revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length && 'IntersectionObserver' in window) {
+    var rio = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          rio.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function(el) { rio.observe(el); });
+  } else {
+    revealEls.forEach(function(el) { el.classList.add('in-view'); });
   }
   document.querySelectorAll('.main-nav a').forEach(function(link) {
     link.addEventListener('click', function() {
       document.querySelector('.main-nav').classList.remove('open');
     });
   });
+  var spotlightIndex = 0;
+  var spotlightTimer = null;
+  function showSpotlight(idx) {
+    var slides = document.querySelectorAll('.spotlight-banner');
+    var dots = document.querySelectorAll('.spotlight-dot');
+    if (!slides.length) return;
+    spotlightIndex = (idx + slides.length) % slides.length;
+    slides.forEach(function(s, i) { s.classList.toggle('active', i === spotlightIndex); });
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === spotlightIndex); });
+  }
+  function restartSpotlightTimer() {
+    if (spotlightTimer) clearInterval(spotlightTimer);
+    var slides = document.querySelectorAll('.spotlight-banner');
+    if (slides.length > 1) {
+      spotlightTimer = setInterval(function() { showSpotlight(spotlightIndex + 1); }, 6000);
+    }
+  }
+  window.shiftSpotlight = function(dir) { showSpotlight(spotlightIndex + dir); restartSpotlightTimer(); };
+  window.goToSpotlight = function(idx) { showSpotlight(idx); restartSpotlightTimer(); };
+  restartSpotlightTimer();
+
+  window.openLightbox = function(src) {
+    var overlay = document.getElementById('lightbox-overlay');
+    var img = document.getElementById('lightbox-img');
+    if (overlay && img) {
+      img.src = src;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+  window.closeLightbox = function() {
+    var overlay = document.getElementById('lightbox-overlay');
+    if (overlay) { overlay.classList.remove('open'); document.body.style.overflow = ''; }
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { window.closeLightbox(); }
+  });
 })();
 </script>
+<script src="/assets/bg-gradient.js" defer></script>
+
 </body>
 </html>

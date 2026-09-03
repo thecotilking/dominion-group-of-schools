@@ -28,25 +28,28 @@
   "sameAs": []
 }
 </script>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/crest-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/icons/crest-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/crest-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/crest-180.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#6E1E2E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css">
-<script>
-window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<link rel="stylesheet" href="/assets/styles.css">
 </head>
-<body class="">
-<div class="site-notice">🎓 We're Hiring! Physics, English, Chemistry &amp; Biology teachers wanted.<a href="news.html#hiring">View Details</a></div>
+<body class="bg-aurora">
+<div class="site-notice"><div class="marquee-track"><span class="marquee-item">🎓 Admissions for 2026 are now open!<a href="/admissions.html">Apply or Enquire</a></span><span class="marquee-item">🎓 Admissions for 2026 are now open!<a href="/admissions.html">Apply or Enquire</a></span></div></div>
 <header class="site-header">
   <div class="nav-row">
-    <a href="index.html" class="brand">
-      <img src="assets/photos/logo.jpg" alt="Dominion Group of Schools crest" class="brand-mark" style="border-radius:50%; object-fit:cover;">
+    <a href="/index.html" class="brand">
+      <img src="/assets/photos/logo.jpg" alt="Dominion Group of Schools crest" class="brand-mark" style="border-radius:50%; object-fit:cover;">
       <span class="brand-name">Dominion Group<small>of Schools</small></span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" onclick="document.querySelector('.main-nav').classList.toggle('open')">☰</button>
     <nav class="main-nav">
-      <a href="index.html">Home</a><a href="about.html">About</a><a href="academics.html">Academics</a><a href="admissions.html">Admissions</a><a href="news.html">News</a><a href="contact.html" aria-current="page">Contact</a>
-      <a href="admissions.html" class="btn btn-gold" style="padding:10px 20px;">Apply Now</a>
+      <a href="/index.html">Home</a><a href="/about.html">About</a><a href="/academics.html">Academics</a><a href="/admissions.html">Admissions</a><a href="/news.html">News</a><a href="/contact.html" aria-current="page">Contact</a>
+      <a href="/admissions.html" class="btn btn-gold" style="padding:10px 20px;">Apply Now</a>
     </nav>
   </div>
 </header>
@@ -77,8 +80,10 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <button type="submit" class="btn btn-primary">Send Message</button>
     </form>
     <div class="card">
-      <h3>Visit Us</h3>
+      <h3>Visit Us &mdash; College &amp; Nur/Pri Annex</h3>
       <p>1 Dominion School Road, off Hospital Road, Ugboma Layout, Asaba, Delta State</p>
+      <h3>Visit Us &mdash; Nursery/Primary School</h3>
+      <p>7 Osowe Street, Ogbeosowe, Asaba, Delta State</p>
       <h3>Call Us</h3>
       <p>0705 574 2394</p>
       <h3>Email Us</h3>
@@ -99,10 +104,10 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <div>
         <h4>Explore</h4>
         <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="academics.html">Academics</a></li>
-          <li><a href="admissions.html">Admissions</a></li>
-          <li><a href="news.html">News &amp; Events</a></li>
+          <li><a href="/about.html">About Us</a></li>
+          <li><a href="/academics.html">Academics</a></li>
+          <li><a href="/admissions.html">Admissions</a></li>
+          <li><a href="/news.html">News &amp; Events</a></li>
         </ul>
       </div>
       <div>
@@ -120,14 +125,27 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     </div>
   </div>
 </footer>
+<div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox()">
+  <button class="modal-close" onclick="closeLightbox()" aria-label="Close" style="position:fixed; top:20px; right:20px;">&times;</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
 <script>
 (function() {
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function startArcSun() {
+    if (reducedMotion) return;
+    var motion = document.getElementById('arcSunMotion');
+    if (motion && motion.beginElement) {
+      try { motion.beginElement(); } catch (e) {}
+    }
+  }
   var arc = document.querySelector('.arc-wrap');
   if (arc && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           arc.classList.add('in-view');
+          startArcSun();
           io.disconnect();
         }
       });
@@ -135,13 +153,68 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     io.observe(arc);
   } else if (arc) {
     arc.classList.add('in-view');
+    startArcSun();
+  }
+
+  var revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length && 'IntersectionObserver' in window) {
+    var rio = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          rio.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function(el) { rio.observe(el); });
+  } else {
+    revealEls.forEach(function(el) { el.classList.add('in-view'); });
   }
   document.querySelectorAll('.main-nav a').forEach(function(link) {
     link.addEventListener('click', function() {
       document.querySelector('.main-nav').classList.remove('open');
     });
   });
+  var spotlightIndex = 0;
+  var spotlightTimer = null;
+  function showSpotlight(idx) {
+    var slides = document.querySelectorAll('.spotlight-banner');
+    var dots = document.querySelectorAll('.spotlight-dot');
+    if (!slides.length) return;
+    spotlightIndex = (idx + slides.length) % slides.length;
+    slides.forEach(function(s, i) { s.classList.toggle('active', i === spotlightIndex); });
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === spotlightIndex); });
+  }
+  function restartSpotlightTimer() {
+    if (spotlightTimer) clearInterval(spotlightTimer);
+    var slides = document.querySelectorAll('.spotlight-banner');
+    if (slides.length > 1) {
+      spotlightTimer = setInterval(function() { showSpotlight(spotlightIndex + 1); }, 6000);
+    }
+  }
+  window.shiftSpotlight = function(dir) { showSpotlight(spotlightIndex + dir); restartSpotlightTimer(); };
+  window.goToSpotlight = function(idx) { showSpotlight(idx); restartSpotlightTimer(); };
+  restartSpotlightTimer();
+
+  window.openLightbox = function(src) {
+    var overlay = document.getElementById('lightbox-overlay');
+    var img = document.getElementById('lightbox-img');
+    if (overlay && img) {
+      img.src = src;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+  window.closeLightbox = function() {
+    var overlay = document.getElementById('lightbox-overlay');
+    if (overlay) { overlay.classList.remove('open'); document.body.style.overflow = ''; }
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { window.closeLightbox(); }
+  });
 })();
 </script>
+<script src="/assets/bg-gradient.js" defer></script>
+
 </body>
 </html>

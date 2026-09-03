@@ -1,0 +1,20 @@
+{
+  "name": "Dominion Group of Schools",
+  "short_name": "Dominion",
+  "icons": [
+    {
+      "src": "/assets/icons/crest-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/crest-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#6E1E2E",
+  "background_color": "#FBF3E7",
+  "display": "standalone",
+  "start_url": "/"
+}

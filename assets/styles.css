@@ -990,3 +990,41 @@ body.bg-sunrise::before {
 
 .mt-0 { margin-top: 0; }
 .text-center { text-align: center; }
+
+/* ---------- WebGL layers ---------- */
+/* Both of these are progressive enhancements. If the scripts bail — reduced
+   motion, save-data, a weak device, no WebGL — nothing below applies and the
+   CSS aurora and the SVG arc carry on as they always have. */
+
+.bg-webgl {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Must stay after body.bg-aurora::before — same specificity, so the later
+   rule is what wins. */
+body.webgl-bg::before {
+  opacity: 0;
+}
+
+.arc-canvas {
+  display: block;
+  width: 100%;
+}
+
+.arc-wrap.webgl-arc > svg {
+  display: none;
+}
+
+/* Narrowed after the 3D arc was built: hand the SVG back rather than squeeze
+   a wide canvas into a phone column. The script pauses rendering while this
+   is in force (it checks offsetParent). */
+@media (max-width: 860px) {
+  .arc-wrap.webgl-arc > svg { display: inline; }
+  .arc-wrap.webgl-arc > .arc-canvas { display: none; }
+}

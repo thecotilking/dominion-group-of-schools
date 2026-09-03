@@ -1,5 +1,6 @@
 import os
 import re
+import json
 import shutil
 from datetime import date, datetime
 
@@ -130,7 +131,14 @@ def footer():
   </div>
 </footer>'''
 
-def page(title, description, active, body, extra_class="bg-aurora"):
+# three.js is loaded on the homepage alone — it is the only page with the arc,
+# and ~170KB gzipped is not a fair price on every page for visitors on mobile
+# data. The site-wide background uses raw WebGL instead (assets/bg-gradient.js).
+HOME_SCRIPTS = """<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" defer></script>
+<script src="/assets/hero-arc.js" defer></script>"""
+
+
+def page(title, description, active, body, extra_class="bg-aurora", extra_scripts=""):
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -161,6 +169,13 @@ def page(title, description, active, body, extra_class="bg-aurora"):
   "sameAs": []
 }}
 </script>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/crest-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/icons/crest-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/crest-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/crest-180.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#6E1E2E">
 {FONTS}
 <link rel="stylesheet" href="/assets/styles.css">
 </head>
@@ -258,6 +273,8 @@ def page(title, description, active, body, extra_class="bg-aurora"):
   }});
 }})();
 </script>
+<script src="/assets/bg-gradient.js" defer></script>
+{extra_scripts}
 </body>
 </html>'''
 
@@ -493,7 +510,7 @@ home_body = f'''
 </section>
 '''
 with open("output/index.html", "w") as f:
-    f.write(page("Home", "Dominion Group of Schools — Nursery, Primary and Secondary education.", "index.html", home_body))
+    f.write(page("Home", "Dominion Group of Schools — Nursery, Primary and Secondary education.", "index.html", home_body, extra_scripts=HOME_SCRIPTS))
 
 # ---------------- ABOUT ----------------
 about_body = '''
@@ -845,6 +862,24 @@ with open("output/thank-you.html", "w") as f:
 
 # ---------------- Copy static assets ----------------
 shutil.copytree("assets", "output/assets", dirs_exist_ok=True)
+
+# Google's crawler and older browsers probe /favicon.ico at the site root,
+# not wherever the <link> points, so it has to exist there too.
+shutil.copyfile("assets/icons/favicon.ico", "output/favicon.ico")
+
+with open("output/site.webmanifest", "w", encoding="utf-8") as f:
+    f.write(json.dumps({
+        "name": "Dominion Group of Schools",
+        "short_name": "Dominion",
+        "icons": [
+            {"src": "/assets/icons/crest-192.png", "sizes": "192x192", "type": "image/png"},
+            {"src": "/assets/icons/crest-512.png", "sizes": "512x512", "type": "image/png"},
+        ],
+        "theme_color": "#6E1E2E",
+        "background_color": "#FBF3E7",
+        "display": "standalone",
+        "start_url": "/",
+    }, indent=2))
 os.makedirs("output/assets/photos/news-uploads", exist_ok=True)
 
 if os.path.isdir("admin"):
