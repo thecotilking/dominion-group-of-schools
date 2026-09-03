@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dominiongroupofschools.com/sitemap.xml
+Sitemap: https://www.dominiongroupofschools.com/sitemap.xml

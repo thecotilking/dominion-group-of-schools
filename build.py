@@ -8,7 +8,7 @@ FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link href="
 
 LOGO_SVG = '''<img src="/assets/photos/logo.jpg" alt="Dominion Group of Schools crest" class="brand-mark" style="border-radius:50%; object-fit:cover;">'''
 
-SITE_URL = "https://dominiongroupofschools.com"
+SITE_URL = "https://www.dominiongroupofschools.com"
 
 # ---------------- Markdown frontmatter parsing (no external deps) ----------------
 
@@ -138,7 +138,8 @@ HOME_SCRIPTS = """<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0
 <script src="/assets/hero-arc.js" defer></script>"""
 
 
-def page(title, description, active, body, extra_class="bg-aurora", extra_scripts=""):
+def page(title, description, active, body, extra_class="bg-aurora", extra_scripts="", canonical=""):
+    canonical_tag = f'<link rel="canonical" href="{SITE_URL}{canonical}">' if canonical else ""
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -153,9 +154,9 @@ def page(title, description, active, body, extra_class="bg-aurora", extra_script
   "@type": "School",
   "name": "Dominion Group of Schools",
   "alternateName": "Dominion Nursery/Primary School and Dominion College",
-  "url": "https://dominiongroupofschools.com",
-  "logo": "https://dominiongroupofschools.com/assets/photos/logo.jpg",
-  "image": "https://dominiongroupofschools.com/assets/photos/campus-exterior-1.jpg",
+  "url": "https://www.dominiongroupofschools.com",
+  "logo": "https://www.dominiongroupofschools.com/assets/photos/logo.jpg",
+  "image": "https://www.dominiongroupofschools.com/assets/photos/campus-exterior-1.jpg",
   "description": "Dominion Group of Schools offers Nursery, Primary and Secondary education in Asaba, Delta State, Nigeria, guided by the motto Knowledge, Wisdom, Fear of God.",
   "telephone": "+2347055742394",
   "email": "dominiongroupofschools777@gmail.com",
@@ -169,6 +170,7 @@ def page(title, description, active, body, extra_class="bg-aurora", extra_script
   "sameAs": []
 }}
 </script>
+{canonical_tag}
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/crest-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="/assets/icons/crest-48.png">
@@ -510,7 +512,7 @@ home_body = f'''
 </section>
 '''
 with open("output/index.html", "w", encoding="utf-8") as f:
-    f.write(page("Home", "Dominion Group of Schools — Nursery, Primary and Secondary education.", "index.html", home_body, extra_scripts=HOME_SCRIPTS))
+    f.write(page("Home", "Dominion Group of Schools — Nursery, Primary and Secondary education.", "index.html", home_body, extra_scripts=HOME_SCRIPTS, canonical="/"))
 
 # ---------------- ABOUT ----------------
 about_body = '''
@@ -592,7 +594,7 @@ about_body = '''
 </section>
 '''
 with open("output/about.html", "w", encoding="utf-8") as f:
-    f.write(page("About", "Learn about Dominion Group of Schools — our story, mission and team.", "about.html", about_body))
+    f.write(page("About", "Learn about Dominion Group of Schools — our story, mission and team.", "about.html", about_body, canonical="/about.html"))
 
 # ---------------- ACADEMICS ----------------
 academics_body = '''
@@ -654,7 +656,7 @@ academics_body = '''
 </section>
 '''
 with open("output/academics.html", "w", encoding="utf-8") as f:
-    f.write(page("Academics", "Explore the Dominion Group of Schools curriculum across Nursery, Primary and Secondary.", "academics.html", academics_body))
+    f.write(page("Academics", "Explore the Dominion Group of Schools curriculum across Nursery, Primary and Secondary.", "academics.html", academics_body, canonical="/academics.html"))
 
 # ---------------- ADMISSIONS ----------------
 admissions_body = '''
@@ -682,7 +684,7 @@ admissions_body = '''
     <h2>Request admission information</h2>
     <form class="contact-form" action="https://formspree.io/f/xaqrankp" method="POST">
       <input type="hidden" name="_subject" value="New Admissions Enquiry - Dominion Group of Schools">
-      <input type="hidden" name="_next" value="https://dominiongroupofschools.com/thank-you.html">
+      <input type="hidden" name="_next" value="https://www.dominiongroupofschools.com/thank-you.html">
       <div>
         <label for="parent-name">Parent/Guardian Name</label>
         <input id="parent-name" name="parent_name" type="text" required>
@@ -709,7 +711,7 @@ admissions_body = '''
 </section>
 '''
 with open("output/admissions.html", "w", encoding="utf-8") as f:
-    f.write(page("Admissions", "Start the admissions process at Dominion Group of Schools.", "admissions.html", admissions_body))
+    f.write(page("Admissions", "Start the admissions process at Dominion Group of Schools.", "admissions.html", admissions_body, canonical="/admissions.html"))
 
 
 # ---- Regular news grid (links to individual pages) ----
@@ -753,7 +755,7 @@ news_body = f'''
 </section>
 '''
 with open("output/news.html", "w", encoding="utf-8") as f:
-    f.write(page("News", "Latest news and events from Dominion Group of Schools.", "news.html", news_body))
+    f.write(page("News", "Latest news and events from Dominion Group of Schools.", "news.html", news_body, canonical="/news.html"))
 
 # ---- Individual event pages ----
 os.makedirs("output/news", exist_ok=True)
@@ -794,7 +796,7 @@ for item in news_items:
 </section>
 '''
     with open(f"output/news/{item['slug']}.html", "w", encoding="utf-8") as f:
-        f.write(page(title, body_text[:150], "news.html", event_body))
+        f.write(page(title, body_text[:150], "news.html", event_body, canonical=f"/news/{item['slug']}.html"))
 
 
 
@@ -810,7 +812,7 @@ contact_body = '''
   <div class="wrap hero-grid">
     <form class="contact-form" action="https://formspree.io/f/mqerwajg" method="POST">
       <input type="hidden" name="_subject" value="New Contact Message - Dominion Group of Schools">
-      <input type="hidden" name="_next" value="https://dominiongroupofschools.com/thank-you.html">
+      <input type="hidden" name="_next" value="https://www.dominiongroupofschools.com/thank-you.html">
       <div>
         <label for="c-name">Full Name</label>
         <input id="c-name" name="name" type="text" required>
@@ -841,7 +843,7 @@ contact_body = '''
 </section>
 '''
 with open("output/contact.html", "w", encoding="utf-8") as f:
-    f.write(page("Contact", "Get in touch with Dominion Group of Schools.", "contact.html", contact_body))
+    f.write(page("Contact", "Get in touch with Dominion Group of Schools.", "contact.html", contact_body, canonical="/contact.html"))
 
 # ---------------- THANK YOU ----------------
 thankyou_body = '''
@@ -858,7 +860,7 @@ thankyou_body = '''
 </section>
 '''
 with open("output/thank-you.html", "w", encoding="utf-8") as f:
-    f.write(page("Thank You", "Thank you for contacting Dominion Group of Schools.", "", thankyou_body))
+    f.write(page("Thank You", "Thank you for contacting Dominion Group of Schools.", "", thankyou_body, canonical="/thank-you.html"))
 
 # ---------------- Copy static assets ----------------
 shutil.copytree("assets", "output/assets", dirs_exist_ok=True)
