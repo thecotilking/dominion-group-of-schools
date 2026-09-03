@@ -509,7 +509,7 @@ home_body = f'''
   </div>
 </section>
 '''
-with open("output/index.html", "w") as f:
+with open("output/index.html", "w", encoding="utf-8") as f:
     f.write(page("Home", "Dominion Group of Schools — Nursery, Primary and Secondary education.", "index.html", home_body, extra_scripts=HOME_SCRIPTS))
 
 # ---------------- ABOUT ----------------
@@ -591,7 +591,7 @@ about_body = '''
   </div>
 </section>
 '''
-with open("output/about.html", "w") as f:
+with open("output/about.html", "w", encoding="utf-8") as f:
     f.write(page("About", "Learn about Dominion Group of Schools — our story, mission and team.", "about.html", about_body))
 
 # ---------------- ACADEMICS ----------------
@@ -653,7 +653,7 @@ academics_body = '''
   </div>
 </section>
 '''
-with open("output/academics.html", "w") as f:
+with open("output/academics.html", "w", encoding="utf-8") as f:
     f.write(page("Academics", "Explore the Dominion Group of Schools curriculum across Nursery, Primary and Secondary.", "academics.html", academics_body))
 
 # ---------------- ADMISSIONS ----------------
@@ -708,7 +708,7 @@ admissions_body = '''
   </div>
 </section>
 '''
-with open("output/admissions.html", "w") as f:
+with open("output/admissions.html", "w", encoding="utf-8") as f:
     f.write(page("Admissions", "Start the admissions process at Dominion Group of Schools.", "admissions.html", admissions_body))
 
 
@@ -752,7 +752,7 @@ news_body = f'''
   </div>
 </section>
 '''
-with open("output/news.html", "w") as f:
+with open("output/news.html", "w", encoding="utf-8") as f:
     f.write(page("News", "Latest news and events from Dominion Group of Schools.", "news.html", news_body))
 
 # ---- Individual event pages ----
@@ -793,7 +793,7 @@ for item in news_items:
   </div>
 </section>
 '''
-    with open(f"output/news/{item['slug']}.html", "w") as f:
+    with open(f"output/news/{item['slug']}.html", "w", encoding="utf-8") as f:
         f.write(page(title, body_text[:150], "news.html", event_body))
 
 
@@ -840,7 +840,7 @@ contact_body = '''
   </div>
 </section>
 '''
-with open("output/contact.html", "w") as f:
+with open("output/contact.html", "w", encoding="utf-8") as f:
     f.write(page("Contact", "Get in touch with Dominion Group of Schools.", "contact.html", contact_body))
 
 # ---------------- THANK YOU ----------------
@@ -857,7 +857,7 @@ thankyou_body = '''
   </div>
 </section>
 '''
-with open("output/thank-you.html", "w") as f:
+with open("output/thank-you.html", "w", encoding="utf-8") as f:
     f.write(page("Thank You", "Thank you for contacting Dominion Group of Schools.", "", thankyou_body))
 
 # ---------------- Copy static assets ----------------
@@ -896,10 +896,10 @@ for path, priority in pages:
     lines += ["  <url>", f"    <loc>{url}</loc>", f"    <lastmod>{today}</lastmod>",
               f"    <priority>{priority}</priority>", "  </url>"]
 lines.append("</urlset>")
-with open("output/sitemap.xml", "w") as f:
+with open("output/sitemap.xml", "w", encoding="utf-8") as f:
     f.write("\n".join(lines))
 
-with open("output/robots.txt", "w") as f:
+with open("output/robots.txt", "w", encoding="utf-8") as f:
     f.write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n")
 
 print(f"Build complete. {len(news_items)} news posts included.")
